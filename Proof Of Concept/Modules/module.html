@@ -1,0 +1,31 @@
+<html>
+	<head>
+		<meta name="MODULE_HEIGHT" content="5">
+		<meta name="MODULE_WIDTH" content="3">
+		<meta name="MODULE_NAME" content="Widget 1">
+	</head>
+	<body style="background:black;color:white;margin:0;">
+		<div id="time" style="color:white;font-size:3em;"></div>
+		<script>
+			function checkTime(i) {
+			  if (i < 10) {
+				i = "0" + i;
+			  }
+			  return i;
+			}
+
+			function startTime() {
+			  var today = new Date();
+			  var h = today.getHours();
+			  var m = today.getMinutes();
+			  h = checkTime(h);
+			  m = checkTime(m);
+			  document.getElementById('time').innerHTML = h + ":" + m;
+			  t = setTimeout(function() {
+				startTime();
+			  }, 500);
+			}
+			startTime();
+		</script>
+	</body>
+</html>
