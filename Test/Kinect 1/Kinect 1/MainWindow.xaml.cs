@@ -16,6 +16,7 @@ using Microsoft.Kinect;
 using Microsoft.Kinect.Face;
 using System.Drawing;
 using System.Windows.Media.Imaging;
+using System.Runtime.InteropServices;
 
 
 namespace Kinect_1
@@ -81,50 +82,76 @@ namespace Kinect_1
 
                         if (body != null)
                         {
-                            lbl1.Content = body.Joints[JointType.HandRight].Position.X + " " + body.Joints[JointType.HandRight].Position.Y;
+                            lbl1.Content = body.Joints[JointType.Head].Position.X + " " + body.Joints[JointType.Head].Position.Y;
 
-                            foreach (Joint joint in body.Joints.Values)
+                            Joint joint = body.Joints[JointType.HandLeft];
+                            Ellipse ellipse = new Ellipse();
+                            ellipse.Height = 20;
+                            ellipse.Width = 20;
+                            double CWidth = canvas.Width;
+                            double CHeight = canvas.Height;
+
+                            //ColorSpacePoint point = sensor.CoordinateMapper.MapCameraPointToColorSpace(joint.Position);
+                            //CWidth / 2 - ellipse.Width / 2 + joint.Position.X * CWidth / 2, CHeight / 2 + joint.Position.Y * (-CHeight) / 2
+
+                            SetCursorPos((int) (CWidth / 2 - ellipse.Width / 2 + joint.Position.X * CWidth / 2), (int) (CHeight / 2 + joint.Position.Y * (-CHeight) / 2));
+
+                            if (true)
+                            //if (point.X != Double.NegativeInfinity && point.Y != Double.NegativeInfinity)
+                            {
+                                ellipse.Margin = new Thickness(CWidth / 2 - ellipse.Width / 2 + joint.Position.X * CWidth / 2, CHeight / 2 + joint.Position.Y * (-CHeight) / 2, 0, 0);
+                                //ellipse.Margin = new Thickness(point.X, point.Y, 0, 0);
+                                ellipse.Fill = System.Windows.Media.Brushes.Red;
+                                canvas.Children.Add(ellipse);
+                            }
+
+                            /*foreach (Joint joint in body.Joints.Values)
                             {
                                 //DrawPoint(canvas, joint);
                                 Ellipse ellipse = new Ellipse();
                                 ellipse.Height = 20;
                                 ellipse.Width = 20;
-                                double CWidth = canvas.Width;
-                                double CHeight = canvas.Height;
-                                ellipse.Margin = new Thickness(CWidth / 2 + joint.Position.X * CWidth / 2, CHeight / 2 + joint.Position.Y * (-CHeight) / 2, 0, 0);
-                                //body.Joints[JointType.HandRight].Position.X, body.Joints[JointType.HandRight].Position.Y, 0, 0);
-                                ellipse.Fill = System.Windows.Media.Brushes.Red;
-                                canvas.Children.Add(ellipse);
-                            }
+                                //double CWidth = canvas.Width;
+                                //double CHeight = canvas.Height;
+
+                                ColorSpacePoint point = sensor.CoordinateMapper.MapCameraPointToColorSpace(joint.Position);
+                                //DrawPoint(point);
+
+                                if (point.X != Double.NegativeInfinity && point.Y != Double.NegativeInfinity)
+                                {
+                                    //ellipse.Margin = new Thickness(CWidth / 2 - ellipse.Width / 2 + joint.Position.X * CWidth / 2, CHeight / 2 + joint.Position.Y * (-CHeight) / 2, 0, 0);
+                                    ellipse.Margin = new Thickness(point.X, point.Y, 0, 0);
+                                    ellipse.Fill = System.Windows.Media.Brushes.Red;
+                                    canvas.Children.Add(ellipse);
+                                }
+                            }*/
                         }
                     }
                 }
             }
         }
 
-        private void DrawPoint(Canvas canvas, Joint joint)
+        [DllImport("User32.dll")]
+        private static extern bool SetCursorPos(int X, int Y);
+
+        public void DrawPoint(ColorSpacePoint point)
         {
-            // 1) Check whether the joint is tracked.
-            if (joint.TrackingState == TrackingState.NotTracked) return;
-
-            // 2) Map the real-world coordinates to screen pixels.
-            //joint = joint.ScalTo(canvas.ActualWidth, canvas.ActualHeight);
-
-            // 3) Create a WPF ellipse.
+            // Create an ellipse.
             Ellipse ellipse = new Ellipse
             {
                 Width = 20,
                 Height = 20,
-                Fill = new SolidColorBrush(Colors.Red)
+                Fill = System.Windows.Media.Brushes.Red
             };
 
-            MessageBox.Show(joint.JointType.ToString());
+            // Position the ellipse according to the point's coordinates.
+            if (point.X != Double.NegativeInfinity && point.Y != Double.NegativeInfinity)
+            {
+                Canvas.SetLeft(ellipse, point.X - ellipse.Width / 2);
+                Canvas.SetTop(ellipse, point.Y - ellipse.Height / 2);
+            }
 
-            // 4) Position the ellipse according to the joint's coordinates.
-            Canvas.SetLeft(ellipse, joint.Position.X - ellipse.Width / 2);
-            Canvas.SetTop(ellipse, joint.Position.Y - ellipse.Height / 2);
-
-            // 5) Add the ellipse to the canvas.
+            // Add the ellipse to the canvas.
             canvas.Children.Add(ellipse);
         }
 
