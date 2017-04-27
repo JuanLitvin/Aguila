@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     JSONArray responseArticles = response.getJSONArray("articles");
 
                     List<HashMap<String,String>> news = new ArrayList<HashMap<String, String>>();
-                    for (int i = 0; i < (responseArticles.length() < 5 ? responseArticles.length() : 5); i++) {
+                    for (int i = 0; i < responseArticles.length(); i++) {
                         JSONObject responseArticlesCurrent = responseArticles.getJSONObject(i);
                         String responseArticlesCurrentTitle = responseArticlesCurrent.getString("title");
                         HashMap<String, String> map = new HashMap<String, String>();
