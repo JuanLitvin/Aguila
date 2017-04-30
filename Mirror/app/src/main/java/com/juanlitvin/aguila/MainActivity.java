@@ -1,9 +1,12 @@
 package com.juanlitvin.aguila;
 
+import android.content.Context;
 import android.icu.text.SimpleDateFormat;
+import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -12,8 +15,18 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+import com.squareup.otto.ThreadEnforcer;
+import com.tapadoo.alerter.Alert;
+import com.tapadoo.alerter.Alerter;
+import com.tapadoo.alerter.OnHideAlertListener;
 
+import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -22,20 +35,30 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "HomeActivity";
-    TextView lblHora, lblFecha, txtWidgetClimaTemp, txtWidgetClimaSummary;
+    Context context;
+    TextView widgetHora, widgetFecha, widgetClimaTemp, widgetClimaSummary;
     LinearLayout widgetClima;
     ListView widgetNoticias;
+	
+	public static Bus serviceBus = new Bus(ThreadEnforcer.MAIN);
+	
+	private int notificationCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = this;
+
+        FirebaseMessaging.getInstance().subscribeToTopic("news-debug");
 
         RESTClient.init(this);
 
@@ -44,27 +67,74 @@ public class MainActivity extends AppCompatActivity {
         setListeners();
     }
 
+    public static Bus getBus() {
+        return serviceBus;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            serviceBus.register(this);
+        } catch (Exception e) {}
+    }
+
+    @Override
+    public void onDestroy() {
+        serviceBus.unregister(this);
+        super.onDestroy();
+    }
+
+    @Subscribe
+    public void processNotification(RemoteMessage remoteMessage) {
+        if (remoteMessage.getData().containsKey("add")) {
+            Alerter.create(this)
+                    .setTitle(remoteMessage.getData().get("title"))
+                    .setText(remoteMessage.getData().get("body"))
+                    .setDuration(10000)
+                    .setBackgroundColor(android.R.color.holo_orange_dark)
+                    .setOnHideListener(new OnHideAlertListener() {
+                        @Override
+                        public void onHide() {
+                            addNotificationCount(1);
+                        }
+                    })
+                    .show();
+        } else if (remoteMessage.getData().containsKey("remove")) {
+            addNotificationCount(-1);
+        }
+    }
+
+    private void addNotificationCount(int i) {
+        notificationCount += i;
+        ((TextView) findViewById(R.id.widgetNotificationsCount)).setText(Integer.toString(notificationCount));
+    }
+
     private void assignControls() {
-        lblHora  = (TextView) findViewById(R.id.widgetHora);
-        lblFecha = (TextView) findViewById(R.id.widgetFecha);
+        widgetHora  = (TextView) findViewById(R.id.widgetHora);
+        widgetFecha = (TextView) findViewById(R.id.widgetFecha);
         widgetClima = (LinearLayout) findViewById(R.id.widgetClima);
-        txtWidgetClimaTemp = (TextView) findViewById(R.id.widgetClimaTemp);
-        txtWidgetClimaSummary = (TextView) findViewById(R.id.widgetClimaSummary);
+        widgetClimaTemp = (TextView) findViewById(R.id.widgetClimaTemp);
+        widgetClimaSummary = (TextView) findViewById(R.id.widgetClimaSummary);
         widgetNoticias = (ListView) findViewById(R.id.widgetNoticias);
     }
 
     private void assignControlValues() {
         //----------lblHora----------
         final Handler handler = new Handler();
-        handler.postDelayed(new Runnable(){
+        handler.post(new Runnable(){
             public void run(){
-                lblHora.setText(new SimpleDateFormat("HH:mm").format(new Date(Calendar.getInstance().getTimeInMillis())));
-                handler.postDelayed(this, 1000);
+                Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT-03:00"));
+                if (Build.VERSION.SDK_INT >= 24) widgetHora.setText(new SimpleDateFormat("HH:mm").format(c.getTime()));
+                else widgetHora.setText(String.format("%02d" , c.get(Calendar.HOUR_OF_DAY), Locale.US) + ":" + String.format("%02d" , c.get(Calendar.MINUTE), Locale.US));
+                //execute again when next minute happens
+                handler.postDelayed(this, DateTime.now().withMillisOfSecond(0).withSecondOfMinute(0).plusMinutes(1).getMillis() - DateTime.now().getMillis());
             }
-        }, 1000);
+        });
+
         //----------lblHora----------
 
-        lblFecha.setText(getDateString());
+        widgetFecha.setText(getDateString());
 
         getTemp();
 
@@ -84,8 +154,8 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject responseCurrently = response.getJSONObject("currently");
                     String responseCurrentlyTemp = Integer.toString(convertFahrenheitToCelcius(responseCurrently.getDouble("temperature")));
                     String responseCurrentlySummary = responseCurrently.getString("summary");
-                    txtWidgetClimaTemp.setText(responseCurrentlyTemp + "°");
-                    txtWidgetClimaSummary.setText(responseCurrentlySummary);
+                    widgetClimaTemp.setText(responseCurrentlyTemp + "°");
+                    widgetClimaSummary.setText(responseCurrentlySummary);
                 } catch (Exception e) {}
             }
             @Override
