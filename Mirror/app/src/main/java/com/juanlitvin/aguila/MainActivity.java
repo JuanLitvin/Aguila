@@ -45,9 +45,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "HomeActivity";
     Context context;
-    TextView widgetFecha, widgetClimaTemp, widgetClimaSummary;
-    LinearLayout widgetClima;
-    ListView widgetNoticias;
 	
 	public static Bus serviceBus = new Bus(ThreadEnforcer.MAIN);
 	
@@ -105,6 +102,14 @@ public class MainActivity extends AppCompatActivity {
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.addToBackStack(null);
         ft.commit();
+
+        MirrorModule greeting = new GreetingFragment();
+        greeting.init();
+        ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragment1, greeting);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
     public static Bus getBus() {
@@ -147,11 +152,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void addNotificationCount(int i) {
         notificationCount += i;
-        ((TextView) findViewById(R.id.widgetNotificationsCount)).setText(Integer.toString(notificationCount));
+        //((TextView) findViewById(R.id.widgetNotificationCount)).setText(Integer.toString(notificationCount));
     }
 
     private void assignControls() {
-
+        //D%go2&BDk,{$
     }
 
     private void assignControlValues() {

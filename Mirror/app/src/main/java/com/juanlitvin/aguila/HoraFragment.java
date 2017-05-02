@@ -2,6 +2,7 @@ package com.juanlitvin.aguila;
 
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,16 +25,23 @@ public class HoraFragment extends MirrorModule {
     private TimeZone timeZone;
     TextView lblHora;
 
-    public HoraFragment() {
-
-    }
-
     @Override
     public void init() {
         Bundle extras = getArguments();
         timeZone = TimeZone.getTimeZone(extras.getString("timeZone"));
 
         startLoop();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        lblHora = new TextView(getActivity());
+        lblHora.setTextSize(60f);
+        lblHora.setTextColor(Color.WHITE);
+        lblHora.setTypeface(null, Typeface.BOLD);
+        lblHora.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        return lblHora;
     }
 
     private void startLoop() {
@@ -47,16 +55,6 @@ public class HoraFragment extends MirrorModule {
                 handler.postDelayed(this, DateTime.now().withMillisOfSecond(0).withSecondOfMinute(0).plusMinutes(1).getMillis() - DateTime.now().getMillis());
             }
         });
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        lblHora = new TextView(getActivity());
-        lblHora.setTextSize(30f);
-        lblHora.setTextColor(Color.WHITE);
-        lblHora.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
-        return lblHora;
     }
 
 }

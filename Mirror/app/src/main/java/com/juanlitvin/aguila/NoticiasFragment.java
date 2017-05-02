@@ -40,6 +40,7 @@ public class NoticiasFragment extends MirrorModule {
         listNoticias = new ListView(getActivity());
         listNoticias.setDivider(null);
         listNoticias.setDividerHeight(0);
+        listNoticias.setVerticalScrollBarEnabled(false);
         listNoticias.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         return listNoticias;

@@ -40,7 +40,7 @@ public class FechaFragment extends MirrorModule {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         lblFecha = new TextView(getActivity());
-        lblFecha.setTextSize(20f);
+        lblFecha.setTextSize(40f);
         lblFecha.setTextColor(Color.parseColor("#DDDDDD"));
         lblFecha.setGravity(Gravity.RIGHT);
         lblFecha.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));

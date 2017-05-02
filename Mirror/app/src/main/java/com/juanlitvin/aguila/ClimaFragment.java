@@ -1,6 +1,7 @@
 package com.juanlitvin.aguila;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,17 +37,22 @@ public class ClimaFragment extends MirrorModule {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LinearLayout layout = new LinearLayout(getActivity());
         layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        layout.setGravity(Gravity.RIGHT);
 
         lblTemp = new TextView(getActivity());
-        lblTemp.setTextSize(30f);
+        lblTemp.setTextSize(50f);
         lblTemp.setTextColor(Color.WHITE);
+        lblTemp.setTypeface(Typeface.SERIF, Typeface.BOLD);
         lblTemp.setIncludeFontPadding(false);
 
         lblSummary = new TextView(getActivity());
-        lblSummary.setTextSize(15f);
+        lblSummary.setTextSize(50f);
         lblSummary.setTextColor(Color.WHITE);
         lblSummary.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(20, 0, 0, 0);
+        lblSummary.setLayoutParams(params);
 
         layout.addView(lblTemp);
         layout.addView(lblSummary);
