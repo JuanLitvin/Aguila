@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,107 +8,90 @@
     android:paddingBottom="60dp"
     android:paddingLeft="80dp"
     android:paddingRight="80dp"
+    android:orientation="vertical"
     android:id="@+id/container"
     android:background="@android:color/black">
 
     <!-- 50 80 50 80 -->
 
-    <LinearLayout
-        android:id="@+id/widgetNotifications"
-        android:layout_centerHorizontal="true"
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp">
 
-        <TextView
-            android:text="You have "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/widgetNotificationsCount"
-            android:text="0"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:text=" notifications"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-
-    <!--60-->
-    <TextView
-        android:id="@+id/widgetHora"
-        android:textSize="60sp"
-        android:textColor="@android:color/white"
-        android:layout_below="@+id/widgetNotifications"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <!--45-->
-    <TextView
-        android:id="@+id/widgetFecha"
-        android:textSize="45sp"
-        android:textColor="#DDDDDD"
-        android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <LinearLayout
-        android:id="@+id/widgetClima"
-        android:layout_marginTop="20dp"
-        android:layout_below="@id/widgetHora"
-        android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <!--50-->
-        <TextView
-            android:id="@+id/widgetClimaTemp"
-            android:textSize="70sp"
-            android:textColor="@android:color/white"
-            android:includeFontPadding="false"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:layout_marginLeft="5dp"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:background="#FFF"
-                android:layout_gravity="center"
-                android:layout_width="60dp"
-                android:layout_height="60dp" />
-
-            <!--35-->
-            <TextView
-                android:id="@+id/widgetClimaSummary"
-                android:textSize="15sp"
-                android:textColor="@android:color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <ListView
-        android:id="@+id/widgetNoticias"
-        android:divider="@null"
-        android:dividerHeight="0dp"
-        android:layout_marginTop="20dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
+    <FrameLayout
+        android:id="@+id/fragment1"
+        android:padding="10dp"
+        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-</RelativeLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <FrameLayout
+            android:id="@+id/fragment2"
+            android:padding="10dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <FrameLayout
+            android:id="@+id/fragment3"
+            android:padding="10dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <FrameLayout
+            android:id="@+id/fragment4"
+            android:padding="10dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <FrameLayout
+            android:id="@+id/fragment5"
+            android:padding="10dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <FrameLayout
+            android:id="@+id/fragment6"
+            android:padding="10dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <FrameLayout
+            android:id="@+id/fragment7"
+            android:padding="10dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+</LinearLayout>
