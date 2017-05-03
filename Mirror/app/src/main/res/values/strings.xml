@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Aguila</string>
+    <string name="pref_string">com.juanlitvin.aguila.prefs</string>
 </resources>

@@ -72,11 +72,11 @@ public class ClimaFragment extends MirrorModule {
     }
 
     private void updateTemp() {
-        RESTClient.get("https://api.darksky.net/forecast/faa5b82ac733134b7bceee9ccfbfb0bb/-34.6076751,-58.4344687", null, new AsyncHttpResponseHandler() {
+        RESTClient.get("https://api.darksky.net/forecast/faa5b82ac733134b7bceee9ccfbfb0bb/-34.6076751,-58.4344687", null, new RESTClient.ResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+            public void onSuccess(int code, String responseBody) {
                 try {
-                    JSONObject response = new JSONObject(new String(responseBody, "UTF-8"));
+                    JSONObject response = new JSONObject(responseBody);
                     JSONObject responseCurrently = response.getJSONObject("currently");
                     String responseCurrentlyTemp = Integer.toString(convertFahrenheitToCelcius(responseCurrently.getDouble("temperature")));
                     String responseCurrentlySummary = responseCurrently.getString("summary");
@@ -86,9 +86,10 @@ public class ClimaFragment extends MirrorModule {
                     lblSummary.setText(responseCurrentlySummary);
                 } catch (Exception e) {}
             }
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
 
+            @Override
+            public void onFailure(int code, String responseBody, Throwable error) {
+                lblSummary.setText("Error");
             }
         });
     }

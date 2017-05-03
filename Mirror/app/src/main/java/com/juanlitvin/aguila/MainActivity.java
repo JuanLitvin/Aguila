@@ -60,56 +60,20 @@ public class MainActivity extends AppCompatActivity {
 
         RESTClient.init(this);
 
-        //assignControls();
-        //assignControlValues();
-        //setListeners();
+        Mirror.register(this);
 
-        addModules();
+        downloadModules();
     }
 
-    private void addModules() {
-        MirrorModule hora = new HoraFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("timeZone", "GMT-03:00");
-        hora.setArguments(bundle);
-        hora.init();
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment2, hora);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        ft.addToBackStack(null);
-        ft.commit();
-
-        MirrorModule fecha = new FechaFragment();
-        fecha.init();
-        ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment3, fecha);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        ft.addToBackStack(null);
-        ft.commit();
-
-        MirrorModule clima = new ClimaFragment();
-        clima.init();
-        ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment5, clima);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        ft.addToBackStack(null);
-        ft.commit();
-
-        MirrorModule noticias = new NoticiasFragment();
-        noticias.init();
-        ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment6, noticias);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        ft.addToBackStack(null);
-        ft.commit();
-
-        MirrorModule greeting = new GreetingFragment();
-        greeting.init();
-        ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment1, greeting);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        ft.addToBackStack(null);
-        ft.commit();
+    private void downloadModules() {
+        List<Module> modules = User.getModules();
+        for (Module module : modules) {
+            if (module.hasExtras()) {
+                Mirror.addModule(this, module.getModule(), module.getFragmentId(), module.getExtras());
+            } else {
+                Mirror.addModule(this, module.getModule(), module.getFragmentId());
+            }
+        }
     }
 
     public static Bus getBus() {
@@ -138,25 +102,12 @@ public class MainActivity extends AppCompatActivity {
                     .setText(remoteMessage.getData().get("body"))
                     .setDuration(10000)
                     .setBackgroundColor(android.R.color.holo_orange_dark)
-                    /*.setOnHideListener(new OnHideAlertListener() {
-                        @Override
-                        public void onHide() {
-                            addNotificationCount(1);
-                        }
-                    })*/           //do not add notifications, could be conflic regarding how apps display their notifications.
                     .show();
-        } else if (remoteMessage.getData().containsKey("remove")) {
-            //addNotificationCount(-1); //do not remove either.
         }
     }
 
-    private void addNotificationCount(int i) {
-        notificationCount += i;
-        //((TextView) findViewById(R.id.widgetNotificationCount)).setText(Integer.toString(notificationCount));
-    }
-
     private void assignControls() {
-        //D%go2&BDk,{$
+
     }
 
     private void assignControlValues() {
