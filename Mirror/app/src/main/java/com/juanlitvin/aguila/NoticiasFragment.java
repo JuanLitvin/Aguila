@@ -1,6 +1,7 @@
 package com.juanlitvin.aguila;
 
 
+import android.graphics.Color;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -58,11 +60,11 @@ public class NoticiasFragment extends MirrorModule {
     }
 
     private void updateNews() {
-        RESTClient.get("http://newsapi.org/v1/articles?source=bbc-news&sortBy=top&apiKey=0d920a4142d947e2bc88652b6fdd584c", null, new AsyncHttpResponseHandler() {
+        RESTClient.get("http://newsapi.org/v1/articles?source=bbc-news&sortBy=top&apiKey=0d920a4142d947e2bc88652b6fdd584c", null, new RESTClient.ResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+            public void onSuccess(int code, String responseBody) {
                 try {
-                    JSONObject response = new JSONObject(new String(responseBody, "UTF-8"));
+                    JSONObject response = new JSONObject(responseBody);
                     JSONArray responseArticles = response.getJSONArray("articles");
 
                     List<HashMap<String,String>> news = new ArrayList<HashMap<String, String>>();
@@ -79,8 +81,11 @@ public class NoticiasFragment extends MirrorModule {
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
+            public void onFailure(int code, String responseBody, Throwable error) {
+                TextView textView = new TextView(getActivity());
+                textView.setTextColor(Color.WHITE);
+                textView.setText("Hubo un error al cargar las noticias");
+                listNoticias.setEmptyView(textView);
             }
         });
     }
