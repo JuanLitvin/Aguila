@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void downloadModules() {
-        List<Module> modules = User.getModules();
+        List<Module> modules = User.getModules(this);
         for (Module module : modules) {
             if (module.hasExtras()) {
                 Mirror.addModule(this, module.getModule(), module.getFragmentId(), module.getExtras());

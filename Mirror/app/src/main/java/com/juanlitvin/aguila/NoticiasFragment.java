@@ -67,16 +67,14 @@ public class NoticiasFragment extends MirrorModule {
                     JSONObject response = new JSONObject(responseBody);
                     JSONArray responseArticles = response.getJSONArray("articles");
 
-                    List<HashMap<String,String>> news = new ArrayList<HashMap<String, String>>();
+                    List<String> news = new ArrayList<String>();
                     for (int i = 0; i < responseArticles.length(); i++) {
                         JSONObject responseArticlesCurrent = responseArticles.getJSONObject(i);
                         String responseArticlesCurrentTitle = responseArticlesCurrent.getString("title");
-                        HashMap<String, String> map = new HashMap<String, String>();
-                        map.put("text", responseArticlesCurrentTitle);
-                        news.add(map);
+                        news.add(responseArticlesCurrentTitle);
                     }
 
-                    listNoticias.setAdapter(new SimpleAdapter(getActivity(),  news, R.layout.news_list, new String[] {"text"}, new int[] {android.R.id.text1}));
+                    listNoticias.setAdapter(new NoticiasAdapter(getActivity(), news));
                 } catch (Exception e) {}
             }
 
