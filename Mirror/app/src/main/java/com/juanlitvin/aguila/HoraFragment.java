@@ -7,7 +7,6 @@ import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +47,8 @@ public class HoraFragment extends MirrorModule {
         final Handler handler = new Handler();
         handler.post(new Runnable(){
             public void run(){
-                Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT-03:00"));
+                TimeZone.setDefault(timeZone);
+                Calendar c = Calendar.getInstance(timeZone);
                 if (Build.VERSION.SDK_INT >= 24) lblHora.setText(new SimpleDateFormat("HH:mm").format(c.getTime()));
                 else lblHora.setText(String.format("%02d" , c.get(Calendar.HOUR_OF_DAY), Locale.US) + ":" + String.format("%02d" , c.get(Calendar.MINUTE), Locale.US));
                 //execute again when next minute happens
