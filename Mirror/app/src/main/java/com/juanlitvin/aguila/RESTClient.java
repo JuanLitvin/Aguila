@@ -6,6 +6,9 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import java.util.List;
+import java.util.Map;
+
 import cz.msebera.android.httpclient.Header;
 
 class RESTClient {
@@ -43,6 +46,27 @@ class RESTClient {
     }
 
     public static void post(String url, RequestParams params, final ResponseHandler handler) {
+        client.post(url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                try {
+                    handler.onSuccess(statusCode, new String(responseBody, "UTF-8"));
+                } catch (Exception e) {}
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                try {
+                    handler.onFailure(statusCode, new String(responseBody, "UTF-8"), error);
+                } catch (Exception e) {}
+            }
+        });
+    }
+
+    public static void post(String url, RequestParams params, Map<String, String> headers, final ResponseHandler handler) {
+        for (String key : headers.keySet()) {
+            client.addHeader(key, headers.get(key));
+        }
         client.post(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

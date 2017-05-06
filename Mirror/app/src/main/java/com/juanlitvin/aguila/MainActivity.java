@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -16,6 +17,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -44,7 +46,7 @@ import cz.msebera.android.httpclient.Header;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "HomeActivity";
-    Context context;
+    public static Context context;
 	
 	public static Bus serviceBus = new Bus(ThreadEnforcer.MAIN);
 	
@@ -61,19 +63,38 @@ public class MainActivity extends AppCompatActivity {
         RESTClient.init(this);
 
         Mirror.register(this);
-
-        downloadModules();
     }
 
-    private void downloadModules() {
-        List<Module> modules = User.getModules(this);
+    public static void downloadModules() {
+        User.getModules(context, new User.Callback() {
+            @Override
+            public void onCallback(Object result) {
+                showProgress(false);
+                for (Module module : (List<Module>) result) {
+                    if (module.hasExtras()) {
+                        Mirror.addModule((MainActivity)context, module.getModule(), module.getFragmentId(), module.getExtras());
+                    } else {
+                        Mirror.addModule((MainActivity)context, module.getModule(), module.getFragmentId());
+                    }
+                }
+            }
+        });
+    }
+
+    public static void downloadModules(List<Module> modules) {
+        showProgress(false);
         for (Module module : modules) {
             if (module.hasExtras()) {
-                Mirror.addModule(this, module.getModule(), module.getFragmentId(), module.getExtras());
+                Mirror.addModule((MainActivity)context, module.getModule(), module.getFragmentId(), module.getExtras());
             } else {
-                Mirror.addModule(this, module.getModule(), module.getFragmentId());
+                Mirror.addModule((MainActivity)context, module.getModule(), module.getFragmentId());
             }
         }
+    }
+
+    private static void showProgress(boolean show) {
+        ((MainActivity)context).findViewById(R.id.progressLoading).setVisibility(show ? View.VISIBLE : View.GONE);
+        ((MainActivity)context).findViewById(R.id.module_container).setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
     public static Bus getBus() {

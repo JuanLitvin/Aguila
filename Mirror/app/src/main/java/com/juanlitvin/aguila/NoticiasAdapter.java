@@ -31,7 +31,7 @@ public class NoticiasAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LinearLayout layout = new LinearLayout(c);
-        layout.setPadding(dpToPx(10), 0, dpToPx(10), 0);
+        layout.setPadding(0, dpToPx(5), 0, dpToPx(5));
         layout.setOrientation(LinearLayout.HORIZONTAL);
         layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
@@ -39,15 +39,14 @@ public class NoticiasAdapter extends ArrayAdapter<String> {
         if (Build.VERSION.SDK_INT < 21) img.setImageDrawable(c.getResources().getDrawable(R.drawable.ic_news));
         else img.setImageDrawable(c.getDrawable(R.drawable.ic_news));
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(20), dpToPx(20));
-        params.setMargins(0, dpToPx(10), 0, 0);
+        params.setMargins(0, dpToPx(0), 0, 0);
         img.setLayoutParams(params);
         layout.addView(img);
 
         TextView txt = new TextView(c);
         txt.setText(list.get(position));
         txt.setTextColor(Color.parseColor("#DDDDDD"));
-        txt.setPadding(0, dpToPx(10), 0, dpToPx(10));
-        txt.setGravity(Gravity.CENTER);
+        txt.setPadding(dpToPx(10), 0, 0, 0);
         txt.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         layout.addView(txt);
 

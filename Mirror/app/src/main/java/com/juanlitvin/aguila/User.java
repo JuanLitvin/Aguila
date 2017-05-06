@@ -16,10 +16,16 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import dalvik.system.DexClassLoader;
 
 public class User {
+
+    public interface Callback {
+        public void onCallback(Object result);
+    }
+
     public static List<Module> getModules(Context c) {
         List<Module> modules = new ArrayList<>();
         Bundle horaBundle = new Bundle();
@@ -50,4 +56,36 @@ public class User {
 
         return modules;
     }
+
+    public static void getModules(Context c, Callback handler) {
+        List<Module> modules = new ArrayList<>();
+        Bundle horaBundle = new Bundle();
+        horaBundle.putString("timeZone", "GMT-03:00");
+        Module module = new Module(new HoraFragment(), R.id.fragment2, horaBundle);
+        modules.add(module);
+
+        module = new Module(new FechaFragment(), R.id.fragment3, null);
+        modules.add(module);
+
+        module = new Module(new ClimaFragment(), R.id.fragment5, null);
+        modules.add(module);
+
+        module = new Module(new NoticiasFragment(), R.id.fragment6, null);
+        modules.add(module);
+
+        module = new Module(new GreetingFragment(), R.id.fragment1, null);
+        modules.add(module);
+
+        /*RhinoAndroidHelper rhinoAndroidHelper = new RhinoAndroidHelper(c);
+        rhinoAndroidHelper.enterContext();
+        try {
+            rhinoAndroidHelper.loadClassJar(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "NoticiasModule.jar"));
+            Toast.makeText(c, "Did it", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+
+        handler.onCallback(modules);
+    }
+
 }

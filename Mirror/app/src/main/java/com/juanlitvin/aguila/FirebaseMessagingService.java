@@ -18,20 +18,34 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         if (remoteMessage.getData() != null) {
             //there is data
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                //is in main thread
-                MainActivity.getBus().post(remoteMessage);
+            if (remoteMessage.getData().containsKey("action")) {
+                //its an update
+                switch (remoteMessage.getData().get("action").toString()) {
+                    case "ownerRegistered":
+                        postBus(RegisterOwnerActivity.getBus(), remoteMessage);
+                        break;
+                }
             } else {
-                //is in another thread
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        MainActivity.getBus().post(remoteMessage);
-                    }
-                });
+                //its a notification
+                postBus(MainActivity.getBus(), remoteMessage);
             }
         }
 
+    }
+
+    private void postBus(final Bus bus, final Object param) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            //is in main thread
+            bus.post(param);
+        } else {
+            //is in another thread
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    bus.post(param);
+                }
+            });
+        }
     }
 
 }

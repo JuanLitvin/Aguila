@@ -9,88 +9,101 @@
     android:paddingLeft="80dp"
     android:paddingRight="80dp"
     android:orientation="vertical"
-    android:id="@+id/container"
     android:background="@android:color/black">
 
     <!-- 50 80 50 80 -->
 
-
-    <FrameLayout
-        android:id="@+id/fragment1"
-        android:padding="10dp"
-        android:layout_margin="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <ProgressBar
+        android:id="@+id/progressLoading"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_weight="1"
+        android:id="@+id/module_container"
+        android:visibility="gone"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="0dp">
+        android:layout_height="match_parent">
 
         <FrameLayout
-            android:id="@+id/fragment2"
+            android:id="@+id/fragment1"
             android:padding="10dp"
             android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
 
-        <FrameLayout
-            android:id="@+id/fragment3"
-            android:padding="10dp"
-            android:layout_margin="5dp"
+            <FrameLayout
+                android:id="@+id/fragment2"
+                android:padding="10dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+
+            <FrameLayout
+                android:id="@+id/fragment3"
+                android:padding="10dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
 
-    </LinearLayout>
+            <FrameLayout
+                android:id="@+id/fragment4"
+                android:padding="10dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
+            <FrameLayout
+                android:id="@+id/fragment5"
+                android:padding="10dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
 
-        <FrameLayout
-            android:id="@+id/fragment4"
-            android:padding="10dp"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
+        </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/fragment5"
-            android:padding="10dp"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_weight="4"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
 
-    </LinearLayout>
+            <FrameLayout
+                android:id="@+id/fragment6"
+                android:padding="10dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_weight="4"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
+            <FrameLayout
+                android:id="@+id/fragment7"
+                android:padding="10dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
 
-        <FrameLayout
-            android:id="@+id/fragment6"
-            android:padding="10dp"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
-
-        <FrameLayout
-            android:id="@+id/fragment7"
-            android:padding="10dp"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
+        </LinearLayout>
 
     </LinearLayout>
 
