@@ -50,7 +50,6 @@ public class HoraFragment extends MirrorModule {
                 TimeZone.setDefault(timeZone);
                 Calendar c = Calendar.getInstance(timeZone);
                 if (Build.VERSION.SDK_INT >= 24) lblHora.setText(new SimpleDateFormat("HH:mm").format(c.getTime()));
-                else lblHora.setText(String.format("%02d" , c.get(Calendar.HOUR_OF_DAY), Locale.US) + ":" + String.format("%02d" , c.get(Calendar.MINUTE), Locale.US));
                 //execute again when next minute happens
                 handler.postDelayed(this, DateTime.now().withMillisOfSecond(0).withSecondOfMinute(0).plusMinutes(1).getMillis() - DateTime.now().getMillis());
             }

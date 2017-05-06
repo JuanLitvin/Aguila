@@ -64,7 +64,10 @@ public class User {
         Module module = new Module(new HoraFragment(), R.id.fragment2, horaBundle);
         modules.add(module);
 
-        module = new Module(new FechaFragment(), R.id.fragment3, null);
+        Bundle fechaBundle = new Bundle();
+        fechaBundle.putString("timeZone", "GMT-03:00");
+        fechaBundle.putString("format", "EEEE dd MMM, YYYY");
+        module = new Module(new FechaFragment(), R.id.fragment3, fechaBundle);
         modules.add(module);
 
         module = new Module(new ClimaFragment(), R.id.fragment5, null);
