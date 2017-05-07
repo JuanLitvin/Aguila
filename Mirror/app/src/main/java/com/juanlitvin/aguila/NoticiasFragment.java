@@ -2,31 +2,22 @@ package com.juanlitvin.aguila;
 
 
 import android.graphics.Color;
-import android.icu.text.SimpleDateFormat;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
+import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
-
-import com.loopj.android.http.AsyncHttpResponseHandler;
-
 import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-
-import cz.msebera.android.httpclient.Header;
+import java.util.logging.XMLFormatter;
 
 public class NoticiasFragment extends MirrorModule {
 
@@ -60,12 +51,12 @@ public class NoticiasFragment extends MirrorModule {
     }
 
     private void updateNews() {
-        RESTClient.get("http://newsapi.org/v1/articles?source=bbc-news&sortBy=top&apiKey=0d920a4142d947e2bc88652b6fdd584c", null, new RESTClient.ResponseHandler() {
+        RESTClient.get("http://rss.nytimes.com/services/xml/rss/nyt/MostViewed.xml", null, new RESTClient.ResponseHandler() {
             @Override
             public void onSuccess(int code, String responseBody) {
                 try {
-                    JSONObject response = new JSONObject(responseBody);
-                    JSONArray responseArticles = response.getJSONArray("articles");
+                    JSONObject response = org.json.XML.toJSONObject(responseBody);
+                    JSONArray responseArticles = response.getJSONObject("rss").getJSONObject("channel").getJSONArray("item");
 
                     List<String> news = new ArrayList<String>();
                     for (int i = 0; i < responseArticles.length(); i++) {

@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.juanlitvin.aguila.MainActivity"
     android:paddingTop="30dp"
     android:paddingBottom="30dp"
     android:paddingLeft="80dp"
@@ -29,7 +28,6 @@
         <FrameLayout
             android:id="@+id/fragment1"
             android:padding="10dp"
-            android:layout_margin="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

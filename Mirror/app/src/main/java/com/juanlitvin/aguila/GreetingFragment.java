@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
@@ -27,8 +28,9 @@ public class GreetingFragment extends MirrorModule {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         lblGreeting = new TextView(getActivity());
         lblGreeting.setTextSize(30f);
-        lblGreeting.setTextColor(Color.parseColor("#DDDDDD"));
-        lblGreeting.setTypeface(Typeface.SERIF, Typeface.BOLD);
+        lblGreeting.setTextColor(Color.BLACK);
+        lblGreeting.setBackgroundColor(Color.WHITE);
+        lblGreeting.setTypeface(Typeface.SANS_SERIF, Typeface.BOLD);
         lblGreeting.setGravity(Gravity.CENTER);
 
         return lblGreeting;

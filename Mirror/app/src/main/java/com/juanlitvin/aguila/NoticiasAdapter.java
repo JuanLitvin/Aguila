@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -44,7 +46,7 @@ public class NoticiasAdapter extends ArrayAdapter<String> {
         layout.addView(img);
 
         TextView txt = new TextView(c);
-        txt.setText(list.get(position));
+        txt.setText(Html.fromHtml(list.get(position)));
         txt.setTextColor(Color.parseColor("#DDDDDD"));
         txt.setPadding(dpToPx(10), 0, 0, 0);
         txt.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
