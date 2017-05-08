@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         Mirror.register(this);
     }
 
-    public static void downloadModules() {
+    public static void loadUserModules() {
         User.getModules(context, new User.Callback() {
             @Override
             public void onCallback(Object result) {
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public static void downloadModules(List<Module> modules) {
+    public static void loadUserModules(List<Module> modules) {
         showProgress(false);
         for (Module module : modules) {
             if (module.hasExtras()) {

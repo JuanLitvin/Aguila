@@ -20,9 +20,12 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             //there is data
             if (remoteMessage.getData().containsKey("action")) {
                 //its an update
-                switch (remoteMessage.getData().get("action").toString()) {
+                switch (remoteMessage.getData().get("action")) {
                     case "ownerRegistered":
                         postBus(RegisterOwnerActivity.getBus(), remoteMessage);
+                        break;
+                    case "userLoggedIn":
+                        postBus(LogUserInActivity.getBus(), remoteMessage);
                         break;
                 }
             } else {

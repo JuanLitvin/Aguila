@@ -31,7 +31,8 @@
         </service>
 
         <activity android:name=".ErrorActivity" />
-        <activity android:name=".RegisterOwnerActivity"></activity>
+        <activity android:name=".RegisterOwnerActivity" />
+        <activity android:name=".LogUserInActivity"></activity>
     </application>
 
 </manifest>
