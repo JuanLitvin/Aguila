@@ -27,6 +27,9 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                     case "userLoggedIn":
                         postBus(LogUserInActivity.getBus(), remoteMessage);
                         break;
+                    case "userChangedConfig":
+                        postBus(MainActivity.getBus(), remoteMessage);
+                        break;
                 }
             } else {
                 //its a notification

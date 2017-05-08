@@ -1,6 +1,7 @@
 package com.juanlitvin.aguila;
 
 import android.content.Context;
+import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Handler;
@@ -49,8 +50,7 @@ public class MainActivity extends AppCompatActivity {
     public static Context context;
 	
 	public static Bus serviceBus = new Bus(ThreadEnforcer.MAIN);
-	
-	private int notificationCount = 0;
+	private static List<Module> offlineModules = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         RESTClient.init(this);
 
         Mirror.register(this);
+
+        serviceBus.register(this);
     }
 
     public static void loadUserModules() {
@@ -83,12 +85,33 @@ public class MainActivity extends AppCompatActivity {
 
     public static void loadUserModules(List<Module> modules) {
         showProgress(false);
+
+        //save modules offline
+        offlineModules = modules;
+
+        //clear modules
+        clearFragments();
+
         for (Module module : modules) {
             if (module.hasExtras()) {
                 Mirror.addModule((MainActivity)context, module.getModule(), module.getFragmentId(), module.getExtras());
             } else {
                 Mirror.addModule((MainActivity)context, module.getModule(), module.getFragmentId());
             }
+        }
+    }
+
+    public void updateModulesConfig(JSONObject config) {
+        Mirror.updateConfig(config);
+    }
+
+    public void updateModulesConfig() {
+        Mirror.updateConfig();
+    }
+
+    private static void clearFragments() {
+        for (MirrorModule fragment : Mirror.moduleFragments) {
+            ((MainActivity) context).getSupportFragmentManager().beginTransaction().remove(fragment).commit();
         }
     }
 
@@ -124,6 +147,16 @@ public class MainActivity extends AppCompatActivity {
                     .setDuration(10000)
                     .setBackgroundColor(android.R.color.holo_orange_dark)
                     .show();
+        }
+        if (remoteMessage.getData().get("action").toString().equals("userChangedConfig")) {
+            //owner was registered, update modules' config
+            try {
+                Mirror.updateConfig(new JSONObject(remoteMessage.getData().get("extras")).getJSONObject("config"));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Mirror.updateConfig();
+            }
         }
     }
 

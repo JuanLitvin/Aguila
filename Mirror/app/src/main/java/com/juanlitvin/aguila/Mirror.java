@@ -31,6 +31,8 @@ public class Mirror {
     public static boolean enabled;
     private static SharedPreferences preferences;
 
+    public static List<MirrorModule> moduleFragments = new ArrayList<>();
+
     private Mirror() {}
 
     public static void register(final Context context) {
@@ -70,7 +72,9 @@ public class Mirror {
 
                     context.startActivity(new Intent(context, RegisterOwnerActivity.class).putExtra("reg-code", regCode));
                     ((Activity)context).finish();
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -137,16 +141,56 @@ public class Mirror {
                 User.setLastName(user.getString("lname"));
                 User.setApiKey(user.getString("apikey"));
 
-                MainActivity.loadUserModules(jsonToModuleArray(user.getJSONObject("config").getJSONArray("modules")));
+                updateConfig(user.getJSONObject("config"));
             } else {
                 //no logged user. Prompt login
                 MainActivity.context.startActivity(new Intent(MainActivity.context, LogUserInActivity.class).putExtra("reg-code", preferences.getString("reg-code", "")));
                 ((MainActivity)MainActivity.context).finish();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             MainActivity.context.startActivity(new Intent(MainActivity.context, ErrorActivity.class).putExtra("error", "Hubo un error al iniciar su sesión.\nCompruebe su conexión y reinicie el dispositivo."));
             ((MainActivity)MainActivity.context).finish();
         }
+    }
+
+    public static void updateConfig(JSONObject config) {
+        try {
+            MainActivity.loadUserModules(jsonToModuleArray(config.getJSONArray("modules")));
+        } catch (Exception e) {
+            e.printStackTrace();
+            MainActivity.context.startActivity(new Intent(MainActivity.context, ErrorActivity.class).putExtra("error", "Hubo un error al iniciar su sesión.\nCompruebe su conexión y reinicie el dispositivo."));
+            ((MainActivity)MainActivity.context).finish();
+        }
+    }
+
+    public static void updateConfig() {
+        Map<String, String> headers = new ArrayMap<>();
+        headers.put("Token", "?QKGe,q$uxkwi7cJ-h4zsuW],^{BFEurhNkfW~-TAnUGc%TGJ4PqmIIp3(FNBj%O");
+        headers.put("Auth", User.apiKey);
+
+        RESTClient.get("https://juanlitvin.com/api/aguila/v1/index.php/user/config", null, headers, new RESTClient.ResponseHandler() {
+            @Override
+            public void onSuccess(int code, String responseBody) {
+                try {
+                    JSONObject config = new JSONObject(responseBody);
+
+                    //update config
+                    MainActivity.loadUserModules(jsonToModuleArray(config.getJSONArray("modules")));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    MainActivity.context.startActivity(new Intent(MainActivity.context, ErrorActivity.class).putExtra("error", "Hubo un error al actualizar su configuración.\nCompruebe su conexión y reinicie el dispositivo."));
+                    ((MainActivity)MainActivity.context).finish();
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String responseBody, Throwable error) {
+                MainActivity.context.startActivity(new Intent(MainActivity.context, ErrorActivity.class).putExtra("error", "Hubo un error al actualizar su configuración.\nCompruebe su conexión y reinicie el dispositivo."));
+                ((MainActivity)MainActivity.context).finish();
+            }
+        });
+
     }
 
     private static List<Module> jsonToModuleArray(JSONArray modulesArray) {
@@ -244,6 +288,9 @@ public class Mirror {
     }
 
     public static void addModule(MainActivity context, MirrorModule module, int fragmentId) {
+        //save fragment for later removal
+        moduleFragments.add(module);
+
         FragmentTransaction ft = context.getSupportFragmentManager().beginTransaction();
         ft.replace(fragmentId, module);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -254,6 +301,9 @@ public class Mirror {
     }
 
     public static void addModule(MainActivity context, MirrorModule module, int fragmentId, Bundle extras) {
+        //save fragment for later removal
+        moduleFragments.add(module);
+
         FragmentTransaction ft = context.getSupportFragmentManager().beginTransaction();
         ft.replace(fragmentId, module);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -291,6 +341,7 @@ public class Mirror {
                 return response.getBoolean("register-required");
             }
         } catch (Exception e) {
+            e.printStackTrace();
             MainActivity.context.startActivity(new Intent(MainActivity.context, ErrorActivity.class).putExtra("error", "Hubo un error al iniciar su espejo.\nCompruebe su conexión y reinicie el dispositivo."));
             ((MainActivity)MainActivity.context).finish();
         }
