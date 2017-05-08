@@ -40,6 +40,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +74,17 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
+                    User.loadFromFirebaseUser(user, new User.LoginCallback() {
+                        @Override
+                        public void onComplete(int statusCode, JSONObject response) {
+
+                        }
+
+                        @Override
+                        public void onError(int statusCode, Throwable error) {
+
+                        }
+                    });
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish();
                 }
