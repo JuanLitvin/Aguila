@@ -231,6 +231,8 @@ public class Mirror {
                 return new NoticiasFragment();
             case basePackage + ".greeting":
                 return new GreetingFragment();
+            case basePackage + ".countdown":
+                return new CountdownFragment();
             default:
                 return new ModuleErrorFragment();
         }
