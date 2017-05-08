@@ -41,6 +41,7 @@ public class FechaFragment extends MirrorModule {
         lblFecha.setTextSize(40f);
         lblFecha.setTextColor(Color.parseColor("#DDDDDD"));
         lblFecha.setGravity(Gravity.RIGHT);
+        lblFecha.setIncludeFontPadding(false);
         lblFecha.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         return lblFecha;

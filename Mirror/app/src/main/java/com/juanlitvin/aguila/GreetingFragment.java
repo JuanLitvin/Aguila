@@ -31,6 +31,7 @@ public class GreetingFragment extends MirrorModule {
         lblGreeting.setTextColor(Color.BLACK);
         lblGreeting.setBackgroundColor(Color.WHITE);
         lblGreeting.setTypeface(Typeface.SANS_SERIF, Typeface.BOLD);
+        lblGreeting.setIncludeFontPadding(false);
         lblGreeting.setGravity(Gravity.CENTER);
 
         return lblGreeting;

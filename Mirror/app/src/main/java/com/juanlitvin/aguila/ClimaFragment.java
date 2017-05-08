@@ -49,6 +49,7 @@ public class ClimaFragment extends MirrorModule {
         lblSummary.setTextSize(50f);
         lblSummary.setTextColor(Color.WHITE);
         lblSummary.setGravity(Gravity.CENTER);
+        lblSummary.setIncludeFontPadding(false);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(20, 0, 0, 0);

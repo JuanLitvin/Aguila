@@ -38,6 +38,7 @@ public class HoraFragment extends MirrorModule {
         lblHora.setTextSize(60f);
         lblHora.setTextColor(Color.WHITE);
         lblHora.setTypeface(null, Typeface.BOLD);
+        lblHora.setIncludeFontPadding(false);
         lblHora.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         return lblHora;
