@@ -1,10 +1,13 @@
 package com.juanlitvin.fenix;
 
+import android.content.Context;
 import android.support.v4.util.ArrayMap;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -15,33 +18,36 @@ public class User {
     private static String userName;
     private static String email;
     private static String apiKey;
+    private static JSONObject config;
+    private static JSONArray devices;
 
     public interface LoginCallback {
         void onComplete(int statusCode, JSONObject response);
         void onError(int statusCode, Throwable error);
     }
 
-    public static void loadFromFirebaseUser(FirebaseUser user, final LoginCallback callback) {
-        setIdUser(user.getUid());
-        setUserName(user.getDisplayName());
-        setEmail(user.getEmail());
+    public static void loadFromFirebaseUser(String uid, final LoginCallback callback) {
+        setIdUser(uid);
 
         //create user on server and get apikey
         RequestParams params = new RequestParams();
         params.put("id", getIdUser());
         params.put("name", getUserName());
         params.put("email", getEmail());
+        params.put("fcm-token", FirebaseInstanceId.getInstance().getToken());
 
         Map<String, String> headers = new ArrayMap<>();
         headers.put("Token", "?QKGe,q$uxkwi7cJ-h4zsuW],^{BFEurhNkfW~-TAnUGc%TGJ4PqmIIp3(FNBj%O");
 
-        RESTClient.get("https://juanlitvin.com/api/aguila/v1/index.php/user/phone/login", params, headers, new RESTClient.ResponseHandler() {
+        RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/phone/login", params, headers, new RESTClient.ResponseHandler() {
             @Override
             public void onSuccess(int statusCode, String responseBody) {
                 try {
                     JSONObject response = new JSONObject(responseBody);
 
                     setApiKey(response.getString("api-key"));
+                    setConfig(response.getJSONObject("config"));
+                    setDevices(response.getJSONArray("devices"));
 
                     callback.onComplete(statusCode, response);
                 } catch (Exception e) {
@@ -73,6 +79,14 @@ public class User {
         return apiKey;
     }
 
+    public static JSONObject getConfig() {
+        return config;
+    }
+
+    public static JSONArray getDevices() {
+        return devices;
+    }
+
     public static void setIdUser(String str) {
         idUser = str;
     }
@@ -87,6 +101,14 @@ public class User {
 
     public static void setApiKey(String str) {
         apiKey = str;
+    }
+
+    public static void setConfig(JSONObject jsonObject) {
+        config = jsonObject;
+    }
+
+    public static void setDevices(JSONArray jsonArray) {
+        devices = jsonArray;
     }
 
 }
