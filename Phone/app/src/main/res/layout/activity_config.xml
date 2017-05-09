@@ -23,6 +23,7 @@
 
         <Button
             android:id="@+id/fragment1"
+            android:tag="Id1"
             android:gravity="center"
             android:background="@drawable/transparent_white_border"
             android:paddingTop="10dp"
@@ -39,6 +40,7 @@
 
             <Button
                 android:id="@+id/fragment2"
+                android:tag="Id2"
                 android:gravity="center"
                 android:background="@drawable/transparent_white_border"
                 android:paddingTop="10dp"
@@ -50,6 +52,7 @@
 
             <Button
                 android:id="@+id/fragment3"
+                android:tag="Id3"
                 android:gravity="center"
                 android:background="@drawable/transparent_white_border"
                 android:paddingTop="10dp"
@@ -69,6 +72,7 @@
 
             <Button
                 android:id="@+id/fragment4"
+                android:tag="Id4"
                 android:gravity="center"
                 android:background="@drawable/transparent_white_border"
                 android:paddingTop="10dp"
@@ -80,6 +84,7 @@
 
             <Button
                 android:id="@+id/fragment5"
+                android:tag="Id5"
                 android:gravity="center"
                 android:background="@drawable/transparent_white_border"
                 android:paddingTop="10dp"
@@ -99,6 +104,7 @@
 
             <Button
                 android:id="@+id/fragment6"
+                android:tag="Id6"
                 android:gravity="center"
                 android:background="@drawable/transparent_white_border"
                 android:paddingTop="10dp"
@@ -110,6 +116,7 @@
 
             <Button
                 android:id="@+id/fragment7"
+                android:tag="Id7"
                 android:gravity="center"
                 android:background="@drawable/transparent_white_border"
                 android:paddingTop="10dp"

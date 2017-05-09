@@ -48,6 +48,7 @@ public class User {
                     setApiKey(response.getString("api-key"));
                     setConfig(response.getJSONObject("config"));
                     setDevices(response.getJSONArray("devices"));
+                    ConfigActivity.saveAvailableModules(response.getJSONArray("available-modules"));
 
                     callback.onComplete(statusCode, response);
                 } catch (Exception e) {
@@ -59,6 +60,27 @@ public class User {
             @Override
             public void onFailure(int statusCode, String responseBody, Throwable error) {
                 callback.onError(statusCode, error);
+            }
+        });
+    }
+
+    public static void sendConfigChange(String settings, String fragments) {
+        RequestParams params = new RequestParams();
+        params.put("config", settings);
+        params.put("fragments", fragments);
+
+        Map<String, String> headers = new ArrayMap<>();
+        headers.put("Token", "?QKGe,q$uxkwi7cJ-h4zsuW],^{BFEurhNkfW~-TAnUGc%TGJ4PqmIIp3(FNBj%O");
+
+        RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/config/edit", params, headers, new RESTClient.ResponseHandler() {
+            @Override
+            public void onSuccess(int code, String responseBody) {
+
+            }
+
+            @Override
+            public void onFailure(int code, String responseBody, Throwable error) {
+
             }
         });
     }
