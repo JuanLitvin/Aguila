@@ -65,24 +65,16 @@ public class User {
     }
 
     public static void sendConfigChange(String settings, String fragments) {
+    public static void sendConfigChange(String settings, String fragments, final RESTClient.ResponseHandler handler) {
         RequestParams params = new RequestParams();
         params.put("config", settings);
         params.put("fragments", fragments);
 
         Map<String, String> headers = new ArrayMap<>();
         headers.put("Token", "?QKGe,q$uxkwi7cJ-h4zsuW],^{BFEurhNkfW~-TAnUGc%TGJ4PqmIIp3(FNBj%O");
+        headers.put("Auth", User.getApiKey());
 
-        RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/config/edit", params, headers, new RESTClient.ResponseHandler() {
-            @Override
-            public void onSuccess(int code, String responseBody) {
-
-            }
-
-            @Override
-            public void onFailure(int code, String responseBody, Throwable error) {
-
-            }
-        });
+        RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/config/edit", params, headers, handler);
     }
 
     public static String getIdUser() {

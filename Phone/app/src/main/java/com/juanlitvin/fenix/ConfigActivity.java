@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -13,12 +14,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static List<String> availableModuleNames;
-    public static List<Integer> availableModuleIds;
+    public static List<String> availableModuleNames = new ArrayList<>();
+    public static List<Integer> availableModuleIds = new ArrayList<>();
 
 
     Button btn1, btn2, btn3, btn4, btn5, btn6, btn7;
@@ -57,7 +59,7 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(final View view) {
         final String IdFragment = (String) view.getTag();
 
         new AlertDialog.Builder(this)
@@ -76,7 +78,22 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
                             JSONObject fragments = new JSONObject();
                             fragments.put(IdFragment, availableModuleIds.get(i));
 
-                            User.sendConfigChange(settings.toString(), fragments.toString());
+                            //say loading while changes are saved on server
+                            ((Button)view).setText("Loading...");
+
+                            //set index to set button text onSuccess
+                            final int indexModule = i;
+                            User.sendConfigChange(settings.toString(), fragments.toString(), new RESTClient.ResponseHandler() {
+                                @Override
+                                public void onSuccess(int code, String responseBody) {
+                                    ((Button)view).setText(availableModuleNames.get(indexModule));
+                                }
+
+                                @Override
+                                public void onFailure(int code, String responseBody, Throwable error) {
+
+                                }
+                            });
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -123,5 +140,7 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
                 e.printStackTrace();
             }
         }
+        availableModuleNames.add("Empty");
+        availableModuleIds.add(0);
     }
 }

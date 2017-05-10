@@ -64,6 +64,9 @@ public class LoginActivity extends Activity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     public static Context context;
 
+    //temp fix for firebase bug calling mAuthListener twice
+    private boolean shouldLoad = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +86,11 @@ public class LoginActivity extends Activity {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                //temp fix for bug calling listener twice
+                if (!shouldLoad) return;
+                else shouldLoad = false;
+
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
@@ -171,6 +179,9 @@ public class LoginActivity extends Activity {
             return;
         }
 
+        //temp bug fix
+        shouldLoad = true;
+
         //sing in
         mAuth.signInWithEmailAndPassword(email, pass)
             .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -194,6 +205,9 @@ public class LoginActivity extends Activity {
             //TODO: SHOW ERROR MESSAGE
             return;
         }
+
+        //temp bug fix
+        shouldLoad = true;
 
         //save email and pass in user
         User.setEmail(email);
