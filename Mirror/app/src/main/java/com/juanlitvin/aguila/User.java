@@ -22,18 +22,14 @@ import dalvik.system.DexClassLoader;
 
 public class User {
 
-    public static String userId, firstName, lastName, apiKey;
+    public static String userId, name, apiKey;
 
     public static void setUserId(String id) {
         userId = id;
     }
 
-    public static void setFirstName(String fName) {
-        firstName = fName;
-    }
-
-    public static void setLastName(String lName) {
-        lastName = lName;
+    public static void setName(String name) {
+        name = name;
     }
 
     public static void setApiKey(String key) {
@@ -44,16 +40,8 @@ public class User {
         return userId;
     }
 
-    public static String getFullName() {
-        return firstName + " " + lastName;
-    }
-
-    public static String getFirstName() {
-        return firstName;
-    }
-
-    public static String getLastName() {
-        return lastName;
+    public static String getName() {
+        return name;
     }
 
     public static String getApiKey() {

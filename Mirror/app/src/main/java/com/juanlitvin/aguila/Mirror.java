@@ -137,8 +137,7 @@ public class Mirror {
             if (user.has("id") && user.getString("id").length() > 0) {
                 //there is a logged user
                 User.setUserId(user.getString("id"));
-                User.setFirstName(user.getString("fname"));
-                User.setLastName(user.getString("lname"));
+                User.setName(user.getString("name"));
                 User.setApiKey(user.getString("apikey"));
 
                 updateConfig(user.getJSONObject("config"));
