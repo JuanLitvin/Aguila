@@ -64,7 +64,6 @@ public class User {
         });
     }
 
-    public static void sendConfigChange(String settings, String fragments) {
     public static void sendConfigChange(String settings, String fragments, final RESTClient.ResponseHandler handler) {
         RequestParams params = new RequestParams();
         params.put("config", settings);
@@ -75,6 +74,29 @@ public class User {
         headers.put("Auth", User.getApiKey());
 
         RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/config/edit", params, headers, handler);
+    }
+
+    public static void registerMirror(String regCode, RESTClient.ResponseHandler handler) {
+        RequestParams params = new RequestParams();
+        params.put("reg-code", regCode);
+        params.put("name", "New Mirror");
+
+        Map<String, String> headers = new ArrayMap<>();
+        headers.put("Token", "?QKGe,q$uxkwi7cJ-h4zsuW],^{BFEurhNkfW~-TAnUGc%TGJ4PqmIIp3(FNBj%O");
+        headers.put("Auth", User.getApiKey());
+
+        RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/mirror/register", params, headers, handler);
+    }
+
+    public static void loginMirror(String regCode, RESTClient.ResponseHandler handler) {
+        RequestParams params = new RequestParams();
+        params.put("reg-code", regCode);
+
+        Map<String, String> headers = new ArrayMap<>();
+        headers.put("Token", "?QKGe,q$uxkwi7cJ-h4zsuW],^{BFEurhNkfW~-TAnUGc%TGJ4PqmIIp3(FNBj%O");
+        headers.put("Auth", User.getApiKey());
+
+        RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/mirror/login", params, headers, handler);
     }
 
     public static String getIdUser() {
