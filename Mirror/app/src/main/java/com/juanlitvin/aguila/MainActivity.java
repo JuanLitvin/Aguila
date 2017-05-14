@@ -93,10 +93,14 @@ public class MainActivity extends AppCompatActivity {
         clearFragments();
 
         for (Module module : modules) {
-            if (module.hasExtras()) {
-                Mirror.addModule((MainActivity)context, module.getModule(), module.getFragmentId(), module.getExtras());
-            } else {
-                Mirror.addModule((MainActivity)context, module.getModule(), module.getFragmentId());
+            try {
+                if (module.hasExtras()) {
+                    Mirror.addModule((MainActivity) context, module.getModule(), module.getFragmentId(), module.getExtras());
+                } else {
+                    Mirror.addModule((MainActivity) context, module.getModule(), module.getFragmentId());
+                }
+            } catch (Exception e) {
+                Mirror.addModule((MainActivity) context, new ModuleErrorFragment(), module.getFragmentId());
             }
         }
     }

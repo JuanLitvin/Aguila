@@ -14,6 +14,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -155,7 +156,7 @@ public class Mirror {
 
     public static void updateConfig(JSONObject config) {
         try {
-            MainActivity.loadUserModules(jsonToModuleArray(config.getJSONArray("modules")));
+            MainActivity.loadUserModules(jsonToModuleArray(config, config.getJSONArray("modules")));
         } catch (Exception e) {
             e.printStackTrace();
             MainActivity.context.startActivity(new Intent(MainActivity.context, ErrorActivity.class).putExtra("error", "Hubo un error al iniciar su sesión.\nCompruebe su conexión y reinicie el dispositivo."));
@@ -175,7 +176,7 @@ public class Mirror {
                     JSONObject config = new JSONObject(responseBody);
 
                     //update config
-                    MainActivity.loadUserModules(jsonToModuleArray(config.getJSONArray("modules")));
+                    MainActivity.loadUserModules(jsonToModuleArray(config, config.getJSONArray("modules")));
                 } catch (Exception e) {
                     e.printStackTrace();
                     MainActivity.context.startActivity(new Intent(MainActivity.context, ErrorActivity.class).putExtra("error", "Hubo un error al actualizar su configuración.\nCompruebe su conexión y reinicie el dispositivo."));
@@ -192,18 +193,26 @@ public class Mirror {
 
     }
 
-    private static List<Module> jsonToModuleArray(JSONArray modulesArray) {
+    private static List<Module> jsonToModuleArray(JSONObject config, JSONArray modulesArray) {
         List<Module> modules = new ArrayList<>();
         for (int i = 0; i < modulesArray.length(); i++) {
             try {
                 JSONObject m = modulesArray.getJSONObject(i);
-                Module module = new Module(getModuleFragmentByPackage(m.getString("package")), getModuleFragmentIdByStringId(m.getString("fragment-id")), m.get("extras") == null ? null : jsonObjectToBundle(m.getJSONObject("extras")));
+                JSONObject extras = getSettingsForPackage(m.getString("package"), config.getJSONObject("settings"));
+                Module module = new Module(getModuleFragmentByPackage(m.getString("package")), getModuleFragmentIdByStringId(m.getString("fragment-id")), extras == null ? null : jsonObjectToBundle(extras));
                 modules.add(module);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return modules;
+    }
+
+    private static JSONObject getSettingsForPackage(String pck, JSONObject settings) {
+        try {
+            return settings.getJSONObject(pck);
+        } catch (Exception e) {}
+        return null;
     }
 
     private static void tryRegister() {
