@@ -17,14 +17,19 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.logging.XMLFormatter;
 
 public class NoticiasFragment extends MirrorModule {
 
     ListView listNoticias;
+    String rss = "";
 
     @Override
     public void init() {
+        Bundle extras = getArguments();
+        rss = extras.getString("rss");
+
         startLoop();
     }
 
@@ -51,7 +56,7 @@ public class NoticiasFragment extends MirrorModule {
     }
 
     private void updateNews() {
-        RESTClient.get("http://rss.nytimes.com/services/xml/rss/nyt/MostViewed.xml", null, new RESTClient.ResponseHandler() {
+        RESTClient.get(rss, null, new RESTClient.ResponseHandler() {
             @Override
             public void onSuccess(int code, String responseBody) {
                 try {
