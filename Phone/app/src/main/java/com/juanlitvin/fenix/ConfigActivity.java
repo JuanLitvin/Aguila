@@ -231,6 +231,7 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
                         public void onSuccess(int code, String responseBody) {
                             dialog.dismiss();
                             finish();
+                            overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
                         }
 
                         @Override
@@ -255,4 +256,11 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
         }
         return response.toString();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+    }
+
 }

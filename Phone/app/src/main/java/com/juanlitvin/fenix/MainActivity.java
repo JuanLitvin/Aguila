@@ -8,16 +8,14 @@ import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
+
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,15 +29,14 @@ public class MainActivity extends AppCompatActivity {
     public static Context context;
 
     private ListView listDevices;
-    private Button btnConfig;
+    private FloatingActionMenu fabMenu;
+    private FloatingActionButton fabAddDevice, fabSignInDevice, fabSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = this;
-
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         assignViews();
         setListeners();
@@ -49,16 +46,40 @@ public class MainActivity extends AppCompatActivity {
 
     private void assignViews() {
         listDevices = (ListView) findViewById(R.id.listDevices);
-        btnConfig = (Button) findViewById(R.id.btnConfig);
+        fabMenu = (FloatingActionMenu) findViewById(R.id.fabMenu);
+        fabAddDevice = (FloatingActionButton) findViewById(R.id.fab_addDevice);
+        fabSignInDevice = (FloatingActionButton) findViewById(R.id.fab_signInDevice);
+        fabSettings = (FloatingActionButton) findViewById(R.id.fab_settings);
     }
 
     private void setListeners() {
-        btnConfig.setOnClickListener(new View.OnClickListener() {
+        fabAddDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialogAddDevice();
+                fabMenu.close(true);
+            }
+        });
+        // <------- fab_addDevice ------->
+
+        fabSignInDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialogSignInDevice();
+                fabMenu.close(true);
+            }
+        });
+        // <------- fab_signInDevice ------->
+
+        fabSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, ConfigActivity.class));
+                overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
+                fabMenu.close(false);
             }
         });
+        // <------- fab_settings ------->
     }
 
     private void loadDevices() {
@@ -74,28 +95,6 @@ public class MainActivity extends AppCompatActivity {
             }
             listDevices.setAdapter(new SimpleAdapter(this, devices, R.layout.devices_list, new String[] {"text1", "text2"}, new int[] {R.id.text1, R.id.text2}));
         } catch (Exception e) {}
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.menu_addDevice:
-                showDialogAddDevice();
-                return true;
-            case R.id.menu_loginInDevice:
-                showDialogSignInDevice();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     private void showDialogAddDevice() {
@@ -125,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onFailure(int code, String responseBody, Throwable error) {
                                 progress.dismiss();
-                                Toast.makeText(MainActivity.this, "No se pudo registrar el dispositivo.\nInténtelo nuevamnete.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "No se puddo registrar el dispositivo.\nInténtelo nuevamnete.", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -179,5 +178,4 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .create().show();
     }
-
 }
