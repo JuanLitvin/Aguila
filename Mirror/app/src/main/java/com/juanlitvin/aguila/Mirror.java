@@ -58,7 +58,7 @@ public class Mirror {
         Map<String, String> headers = new ArrayMap<>();
         headers.put("Token", "?QKGe,q$uxkwi7cJ-h4zsuW],^{BFEurhNkfW~-TAnUGc%TGJ4PqmIIp3(FNBj%O");
 
-        RESTClient.post("https://juanlitvin.com/api/aguila/v1/index.php/mirror/register", params, headers, new RESTClient.ResponseHandler() {
+        RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/mirror/register", params, headers, new RESTClient.ResponseHandler() {
             @Override
             public void onSuccess(int code, String responseBody) {
                 try {
@@ -93,7 +93,7 @@ public class Mirror {
         Map<String, String> headers = new ArrayMap<>();
         headers.put("Token", "?QKGe,q$uxkwi7cJ-h4zsuW],^{BFEurhNkfW~-TAnUGc%TGJ4PqmIIp3(FNBj%O");
 
-        RESTClient.post("https://juanlitvin.com/api/aguila/v1/index.php/mirror/login", params, headers, new RESTClient.ResponseHandler() {
+        RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/mirror/login", params, headers, new RESTClient.ResponseHandler() {
             @Override
             public void onSuccess(int code, String responseBody) {
                 try {
@@ -169,7 +169,7 @@ public class Mirror {
         headers.put("Token", "?QKGe,q$uxkwi7cJ-h4zsuW],^{BFEurhNkfW~-TAnUGc%TGJ4PqmIIp3(FNBj%O");
         headers.put("Auth", User.apiKey);
 
-        RESTClient.get("https://juanlitvin.com/api/aguila/v1/index.php/user/config", null, headers, new RESTClient.ResponseHandler() {
+        RESTClient.get("http://juanlitvin.com/api/aguila/v1/index.php/user/config", null, headers, new RESTClient.ResponseHandler() {
             @Override
             public void onSuccess(int code, String responseBody) {
                 try {
