@@ -20,6 +20,7 @@ public class User {
     private static String apiKey;
     private static JSONObject config;
     private static JSONArray devices;
+    private static JSONArray availableModules;
 
     public interface LoginCallback {
         void onComplete(int statusCode, JSONObject response);
@@ -48,6 +49,7 @@ public class User {
                     setApiKey(response.getString("api-key"));
                     setConfig(response.getJSONObject("config"));
                     setDevices(response.getJSONArray("devices"));
+                    setAvailableModules(response.getJSONArray("available-modules"));
                     ConfigActivity.saveAvailableModules(response.getJSONArray("available-modules"));
 
                     callback.onComplete(statusCode, response);
@@ -123,6 +125,10 @@ public class User {
         return devices;
     }
 
+    public static JSONArray getAvailableModules() {
+        return availableModules;
+    }
+
     public static void setIdUser(String str) {
         idUser = str;
     }
@@ -145,6 +151,10 @@ public class User {
 
     public static void setDevices(JSONArray jsonArray) {
         devices = jsonArray;
+    }
+
+    public static void setAvailableModules(JSONArray array) {
+        availableModules = array;
     }
 
 }

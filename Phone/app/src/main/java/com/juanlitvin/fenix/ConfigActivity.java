@@ -12,8 +12,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -81,59 +83,7 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void uploadConfig() {
-        try {
-            JSONObject config = User.getConfig();
-            final JSONObject setting = config.getJSONObject("settings");
-
-            Iterator<String> iterator = setting.keys();
-            while(iterator.hasNext()) {
-                final String key = (String)iterator.next();
-                JSONObject moduleSettings = setting.getJSONObject(key);
-                Iterator<String> moduleIterator = moduleSettings.keys();
-                while (moduleIterator.hasNext()) {
-                    final String moduleKey = (String) moduleIterator.next();
-                    String value = moduleSettings.getString(moduleKey);
-
-                    View view = getLayoutInflater().inflate(R.layout.alert_input_simple, null);
-                    ((TextView)view.findViewById(R.id.text1)).setText(key + "\n" + moduleKey + ":");
-                    final EditText txt = ((EditText)view.findViewById(R.id.text2));
-                    txt.setHint("Value");
-                    txt.setText(value);
-
-                    new AlertDialog.Builder(this)
-                            .setTitle("Settings")
-                            .setView(view)
-                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    try {
-                                        if (!txt.getText().toString().isEmpty()) {
-                                            setting.getJSONObject(key).put(moduleKey, txt.getText().toString());
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .create().show();
-                }
-            }
-
-            //finished editing settings
-            //save settings
-            config.put("settings", setting);
-
-            //save to User
-            User.setConfig(config);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        startActivity(new Intent(ConfigActivity.this, SettingsConfigActivity.class).putExtra("config",User.getConfig().toString()).putExtra("available-modules", User.getAvailableModules().toString()));
     }
 
     @Override
@@ -168,14 +118,21 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
         clearFragments();
         try {
             JSONObject config = User.getConfig();
-            JSONArray modules = config.getJSONArray("modules");
+            JSONObject modules = config.getJSONObject("modules");
+            JSONArray availableModules = User.getAvailableModules();
+
             for (int i = 1; i <= 7 ; i++) { //loop 1-7
-                Button txtFragment = (Button) findViewById(getResources().getIdentifier("fragment" + i, "id", getPackageName()));
+                String fragmentId = "fragment" + i;
+                Button txtFragment = (Button) findViewById(getResources().getIdentifier(fragmentId, "id", getPackageName()));
                 String text = "";
-                for (int j = 0; j < modules.length(); j++) {
-                    JSONObject mod = modules.getJSONObject(j);
-                    if (mod.getString("fragment-id").equals("fragment" + i)) {
-                        text = mod.getString("name");
+
+                int idModule = modules.has(fragmentId) ? modules.getInt(fragmentId) : -1;
+                for (int j = 0; j < availableModules.length(); j++) {
+                    JSONObject module = availableModules.getJSONObject(j);
+
+                    if (idModule == module.getInt("id")) {
+                        //this module belongs to current fragmentId
+                        text = module.getString("name");
                         break;
                     } else {
                         text = "Empty";
