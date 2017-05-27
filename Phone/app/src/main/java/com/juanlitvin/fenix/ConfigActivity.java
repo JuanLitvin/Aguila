@@ -77,13 +77,14 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
         btnConfig.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadConfig();
+                editSettings();
             }
         });
     }
 
-    private void uploadConfig() {
+    private void editSettings() {
         startActivity(new Intent(ConfigActivity.this, SettingsConfigActivity.class).putExtra("config",User.getConfig().toString()).putExtra("available-modules", User.getAvailableModules().toString()));
+        overridePendingTransition(R.anim.fab_slide_in_from_right, R.anim.fab_slide_out_to_left);
     }
 
     @Override

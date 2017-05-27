@@ -17,15 +17,22 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -57,12 +64,15 @@ public class SettingsConfigActivity extends AppCompatActivity {
                     //each key in each module
                     final String fieldKey = (String) moduleIterator.next();
                     JSONObject fieldValue = moduleFields.getJSONObject(fieldKey);
-                    View view = getConfigViewByFieldConfig(fieldValue);
+                    View view = getConfigViewByFieldConfig(fieldValue, key, fieldKey);
 
                     TextView lbl = new TextView(this);
                     lbl.setText(fieldKey.substring(0, 1).toUpperCase() + fieldKey.substring(1) + ":");
                     layout.addView(lbl);
 
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    params.setMargins(0, 0, 0, dpToPx(20));
+                    view.setLayoutParams(params);
                     layout.addView(view);
 
                     /*View view = getLayoutInflater().inflate(R.layout.alert_input_simple, null);
@@ -107,7 +117,7 @@ public class SettingsConfigActivity extends AppCompatActivity {
         }
     }
 
-    private View getConfigViewByFieldConfig(JSONObject fieldValue) throws JSONException {
+    private View getConfigViewByFieldConfig(JSONObject fieldValue, final String pkg, final String field) throws JSONException {
         switch (fieldValue.getString("method")) {
             case "spinner":
                 Spinner spinner = new Spinner(getApplicationContext());
@@ -120,13 +130,29 @@ public class SettingsConfigActivity extends AppCompatActivity {
                 return editText;
             case "datetime":
                 Calendar now = Calendar.getInstance();
+                final DateTime dt = new DateTime(User.getConfig().getJSONObject("settings").getJSONObject(pkg).getLong("millis"));
                 final DatePickerDialog dpd = DatePickerDialog.newInstance(
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
-                            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                            public void onDateSet(DatePickerDialog view, final int year, final int monthOfYear, final int dayOfMonth) {
+                                TimePickerDialog tpd = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+                                    @Override
+                                    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+                                        try {
+                                            DateTime datetime = new DateTime(year, monthOfYear, dayOfMonth, hourOfDay, minute, 0);
 
+                                            JSONObject config = User.getConfig();
+                                            config.getJSONObject("settings").getJSONObject(pkg).put(field, Long.toString(datetime.getMillis()));
+                                            User.setConfig(config);
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }, dt.getHourOfDay(), dt.getMinuteOfHour(), dt.getSecondOfDay(), true);
+                                tpd.show(getFragmentManager(), "timePickerDialog");
                             }
-                        }, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH)
+                        }, dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth()
                 );
 
                 Button button = new Button(this);
