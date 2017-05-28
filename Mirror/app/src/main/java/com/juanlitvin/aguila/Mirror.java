@@ -33,6 +33,7 @@ public class Mirror {
     private static SharedPreferences preferences;
 
     public static List<MirrorModule> moduleFragments = new ArrayList<>();
+    private static JSONArray availableModules;
 
     private Mirror() {}
 
@@ -100,6 +101,7 @@ public class Mirror {
                     JSONObject response = new JSONObject(responseBody);
 
                     setMirrorConfig(response);
+                    setAvailableModules(response.getJSONArray("available-modules"));
 
                     if (isRegistrationRequired(response)) {
                         registerNewMirror(context);
@@ -156,7 +158,10 @@ public class Mirror {
 
     public static void updateConfig(JSONObject config) {
         try {
-            MainActivity.loadUserModules(jsonToModuleArray(config, config.getJSONArray("modules")));
+            User.setConfig(config);
+
+            List<Module> moduleList = moduleArrayFromModuleIdMap(config.getJSONObject("modules"));
+            MainActivity.loadUserModules(moduleList);
         } catch (Exception e) {
             e.printStackTrace();
             MainActivity.context.startActivity(new Intent(MainActivity.context, ErrorActivity.class).putExtra("error", "Hubo un error al iniciar su sesión.\nCompruebe su conexión y reinicie el dispositivo."));
@@ -175,8 +180,10 @@ public class Mirror {
                 try {
                     JSONObject config = new JSONObject(responseBody);
 
-                    //update config
-                    MainActivity.loadUserModules(jsonToModuleArray(config, config.getJSONArray("modules")));
+                    User.setConfig(config);
+
+                    List<Module> moduleList = moduleArrayFromModuleIdMap(config.getJSONObject("modules"));
+                    MainActivity.loadUserModules(moduleList);
                 } catch (Exception e) {
                     e.printStackTrace();
                     MainActivity.context.startActivity(new Intent(MainActivity.context, ErrorActivity.class).putExtra("error", "Hubo un error al actualizar su configuración.\nCompruebe su conexión y reinicie el dispositivo."));
@@ -193,25 +200,30 @@ public class Mirror {
 
     }
 
-    private static List<Module> jsonToModuleArray(JSONObject config, JSONArray modulesArray) {
-        List<Module> modules = new ArrayList<>();
-        for (int i = 0; i < modulesArray.length(); i++) {
-            try {
-                JSONObject m = modulesArray.getJSONObject(i);
-                JSONObject extras = getSettingsForPackage(m.getString("package"), config.getJSONObject("settings"));
-                Module module = new Module(getModuleFragmentByPackage(m.getString("package")), getModuleFragmentIdByStringId(m.getString("fragment-id")), extras == null ? null : jsonObjectToBundle(extras));
-                modules.add(module);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+    private static List<Module> moduleArrayFromModuleIdMap(JSONObject modules) throws JSONException {
+        List<Module> result = new ArrayList<>();
+
+        Iterator<String> iterator = modules.keys();
+        while (iterator.hasNext()) {
+            String key = (String) iterator.next();
+            int moduleId = modules.getInt(key);
+            Module module = getModuleById(moduleId, key); //moduleId, fragmentId
+            result.add(module);
         }
-        return modules;
+
+        return result;
     }
 
-    private static JSONObject getSettingsForPackage(String pck, JSONObject settings) {
-        try {
-            return settings.getJSONObject(pck);
-        } catch (Exception e) {}
+    private static Module getModuleById(int moduleId, String fragmentIdString) throws JSONException {
+        for (int i = 0; i < availableModules.length(); i++) {
+            if (availableModules.getJSONObject(i).getInt("id") == moduleId) {
+                //there is a match
+                JSONObject m = availableModules.getJSONObject(i);
+                JSONObject extras = User.getConfig().getJSONObject("settings").getJSONObject(m.getString("package"));
+                Module module = new Module(getModuleFragmentByPackage(m.getString("package")), getModuleFragmentIdByStringId(fragmentIdString), extras == null ? null : jsonObjectToBundle(extras));
+                return module;
+            }
+        }
         return null;
     }
 
@@ -356,5 +368,9 @@ public class Mirror {
             ((MainActivity)MainActivity.context).finish();
         }
         return false;
+    }
+
+    public static void setAvailableModules(JSONArray array) {
+        availableModules = array;
     }
 }

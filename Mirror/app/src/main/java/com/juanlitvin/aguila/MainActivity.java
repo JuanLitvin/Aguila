@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
     private Gpio gpioAssistantButton;
 
 	public static Bus serviceBus = new Bus(ThreadEnforcer.MAIN);
-	private static List<Module> offlineModules = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,27 +167,8 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    public static void loadUserModules() {
-        User.getModules(context, new User.Callback() {
-            @Override
-            public void onCallback(Object result) {
-                showProgress(false);
-                for (Module module : (List<Module>) result) {
-                    if (module.hasExtras()) {
-                        Mirror.addModule((MainActivity)context, module.getModule(), module.getFragmentId(), module.getExtras());
-                    } else {
-                        Mirror.addModule((MainActivity)context, module.getModule(), module.getFragmentId());
-                    }
-                }
-            }
-        });
-    }
-
     public static void loadUserModules(List<Module> modules) {
         showProgress(false);
-
-        //save modules offline
-        offlineModules = modules;
 
         //clear modules
         clearFragments();
