@@ -35,6 +35,7 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
     public static List<String> availableModuleNames = new ArrayList<>();
     public static List<Integer> availableModuleIds = new ArrayList<>();
     private static Map<String, Integer> newModules = new ArrayMap<>();
+    private static JSONObject modules;
 
 
     Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btnConfig;
@@ -47,6 +48,12 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         RESTClient.init(this);
+
+        try {
+            modules = User.getConfig().getJSONObject("modules");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         assignViews();
         setListeners();
@@ -83,8 +90,12 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void editSettings() {
-        startActivity(new Intent(ConfigActivity.this, SettingsConfigActivity.class).putExtra("config",User.getConfig().toString()).putExtra("available-modules", User.getAvailableModules().toString()));
-        overridePendingTransition(R.anim.fab_slide_in_from_right, R.anim.fab_slide_out_to_left);
+        try {
+            startActivity(new Intent(ConfigActivity.this, SettingsConfigActivity.class).putExtra("settings", User.getConfig().getJSONObject("settings").toString()).putExtra("available-modules", User.getAvailableModules().toString()));
+            overridePendingTransition(R.anim.fab_slide_in_from_right, R.anim.fab_slide_out_to_left);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -100,6 +111,7 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
                         btnFragment.setText(availableModuleNames.get(i));
                         try {
                             newModules.put(IdFragment, availableModuleIds.get(i));
+                            modules.put(IdFragment.replace("Id", "fragment"), availableModuleIds.get(i));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -118,8 +130,6 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
     private void loadModules() {
         clearFragments();
         try {
-            JSONObject config = User.getConfig();
-            JSONObject modules = config.getJSONObject("modules");
             JSONArray availableModules = User.getAvailableModules();
 
             for (int i = 1; i <= 7 ; i++) { //loop 1-7
@@ -182,7 +192,10 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
                 dialog.show();
 
                 try {
-                     JSONObject settings = User.getConfig().getJSONObject("settings");
+                    JSONObject settings = User.getConfig().getJSONObject("settings");
+
+                    //save changed modules on User for future edits without app restart
+                    User.setConfig(User.getConfig().put("modules", modules));
 
                     User.sendConfigChange(settings.toString(), mapToJsonObjectString(newModules), new RESTClient.ResponseHandler() {
                         @Override

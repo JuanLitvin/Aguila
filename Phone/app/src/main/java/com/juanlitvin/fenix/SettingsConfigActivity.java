@@ -38,8 +38,9 @@ import java.util.List;
 
 public class SettingsConfigActivity extends AppCompatActivity {
 
-    JSONObject config;
+    JSONObject settings;
     JSONArray availableModules;
+    List<View> pendingViews = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +50,8 @@ public class SettingsConfigActivity extends AppCompatActivity {
         LinearLayout layout = (LinearLayout) findViewById(R.id.layoutSettings);
 
         try {
-            config = new JSONObject(getIntent().getStringExtra("config"));
+            settings = new JSONObject(getIntent().getStringExtra("settings"));
             availableModules = new JSONArray(getIntent().getStringExtra("available-modules"));
-
-            JSONObject settings = config.getJSONObject("settings");
 
             Iterator<String> iterator = settings.keys();
             while(iterator.hasNext()) {
@@ -74,35 +73,6 @@ public class SettingsConfigActivity extends AppCompatActivity {
                     params.setMargins(0, 0, 0, dpToPx(20));
                     view.setLayoutParams(params);
                     layout.addView(view);
-
-                    /*View view = getLayoutInflater().inflate(R.layout.alert_input_simple, null);
-                    ((TextView)view.findViewById(R.id.text1)).setText(key + "\n" + moduleKey + ":");
-                    final EditText txt = ((EditText)view.findViewById(R.id.text2));
-                    txt.setHint("Value");
-                    txt.setText(value);
-
-                    new AlertDialog.Builder(this)
-                            .setTitle("Settings")
-                            .setView(view)
-                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    try {
-                                        if (!txt.getText().toString().isEmpty()) {
-                                            setting.getJSONObject(key).put(moduleKey, txt.getText().toString());
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .create().show();*/
                 }
             }
 
@@ -120,13 +90,42 @@ public class SettingsConfigActivity extends AppCompatActivity {
     private View getConfigViewByFieldConfig(JSONObject fieldValue, final String pkg, final String field) throws JSONException {
         switch (fieldValue.getString("method")) {
             case "spinner":
+                final List<String> items = getStringListFromJsonArray(fieldValue.getJSONArray("items"));
+
                 Spinner spinner = new Spinner(getApplicationContext());
                 spinner.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, getStringListFromJsonArray(fieldValue.getJSONArray("items"))));
+                spinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items));
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        try {
+                            settings.getJSONObject(pkg).put(field, items.get(position));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+
+                //set default value
+                for (int i = 0; i < spinner.getCount();i++) {
+                    if (spinner.getItemAtPosition(i).toString().equals(settings.getJSONObject(pkg).getString(field))) {
+                        spinner.setSelection(i);
+                    }
+                }
+
                 return spinner;
             case "text":
                 EditText editText = new EditText(this);
                 editText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                editText.setTag(pkg + "\"" + field);
+                editText.setText(settings.getJSONObject(pkg).getString(field));
+
+                pendingViews.add(editText); //add to pending views for its value to be saved later
                 return editText;
             case "datetime":
                 Calendar now = Calendar.getInstance();
@@ -141,9 +140,7 @@ public class SettingsConfigActivity extends AppCompatActivity {
                                         try {
                                             DateTime datetime = new DateTime(year, monthOfYear, dayOfMonth, hourOfDay, minute, 0);
 
-                                            JSONObject config = User.getConfig();
-                                            config.getJSONObject("settings").getJSONObject(pkg).put(field, Long.toString(datetime.getMillis()));
-                                            User.setConfig(config);
+                                            settings.getJSONObject(pkg).put(field, Long.toString(datetime.getMillis()));
 
                                         } catch (Exception e) {
                                             e.printStackTrace();
@@ -211,30 +208,31 @@ public class SettingsConfigActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.menu_save:
-                final ProgressDialog dialog = new ProgressDialog(this);
-                dialog.setCancelable(false);
-                dialog.setMessage("Saving...");
-                dialog.show();
-
                 try {
-                    /*JSONObject settings = User.getConfig().getJSONObject("settings");
+                    //save edittext's changes
+                    for (View view : pendingViews) {
+                        try {
+                            String pkg = view.getTag().toString().split("\"")[0];
+                            String field = view.getTag().toString().split("\"")[1];
+                            String value = "";
 
-                    User.sendConfigChange(settings.toString(), mapToJsonObjectString(newModules), new RESTClient.ResponseHandler() {
-                        @Override
-                        public void onSuccess(int code, String responseBody) {
-                            dialog.dismiss();
-                            finish();
-                            overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
-                        }
+                            if (view instanceof EditText) {
+                                value = ((EditText)view).getText().toString();
+                            }
 
-                        @Override
-                        public void onFailure(int code, String responseBody, Throwable error) {
-                            dialog.dismiss();
+                            settings.getJSONObject(pkg).put(field, value);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(this, "Could not save settings for\n" + view.getTag().toString(), Toast.LENGTH_SHORT).show();
                         }
-                    });*/
+                    }
+
+                    User.setConfig(User.getConfig().put("settings", settings)); //get user config, add editted settings and save to user.
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                finish();
+                overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
