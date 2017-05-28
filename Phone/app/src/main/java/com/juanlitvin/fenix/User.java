@@ -10,6 +10,8 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class User {
@@ -19,7 +21,7 @@ public class User {
     private static String email;
     private static String apiKey;
     private static JSONObject config;
-    private static JSONArray devices;
+    private static List<Device> devices;
     private static JSONArray availableModules;
 
     public interface LoginCallback {
@@ -48,7 +50,7 @@ public class User {
 
                     setApiKey(response.getString("api-key"));
                     setConfig(response.getJSONObject("config"));
-                    setDevices(response.getJSONArray("devices"));
+                    setDevices(jsonArrayToDeviceList(response.getJSONArray("devices")));
                     setAvailableModules(response.getJSONArray("available-modules"));
                     ConfigActivity.saveAvailableModules(response.getJSONArray("available-modules"));
 
@@ -64,6 +66,19 @@ public class User {
                 callback.onError(statusCode, error);
             }
         });
+    }
+
+    private static List<Device> jsonArrayToDeviceList(JSONArray devices) {
+        List<Device> listDevices = new ArrayList<>();
+        for (int i = 0; i < devices.length(); i++) {
+            try {
+                listDevices.add(new Device(devices.getJSONObject(i).getString("id"), devices.getJSONObject(i).getString("name"), devices.getJSONObject(i).getString("owner"), ""));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return listDevices;
     }
 
     public static void sendConfigChange(String settings, String fragments, final RESTClient.ResponseHandler handler) {
@@ -121,7 +136,7 @@ public class User {
         return config;
     }
 
-    public static JSONArray getDevices() {
+    public static List<Device> getDevices() {
         return devices;
     }
 
@@ -149,8 +164,8 @@ public class User {
         config = jsonObject;
     }
 
-    public static void setDevices(JSONArray jsonArray) {
-        devices = jsonArray;
+    public static void setDevices(List<Device> list) {
+        devices = list;
     }
 
     public static void setAvailableModules(JSONArray array) {

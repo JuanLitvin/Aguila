@@ -138,7 +138,7 @@ public class SettingsConfigActivity extends AppCompatActivity {
                                     @Override
                                     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
                                         try {
-                                            DateTime datetime = new DateTime(year, monthOfYear, dayOfMonth, hourOfDay, minute, 0);
+                                            DateTime datetime = new DateTime(year, monthOfYear + 1, dayOfMonth, hourOfDay, minute, 0);
 
                                             settings.getJSONObject(pkg).put(field, Long.toString(datetime.getMillis()));
 
@@ -149,7 +149,7 @@ public class SettingsConfigActivity extends AppCompatActivity {
                                 }, dt.getHourOfDay(), dt.getMinuteOfHour(), dt.getSecondOfDay(), true);
                                 tpd.show(getFragmentManager(), "timePickerDialog");
                             }
-                        }, dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth()
+                        }, dt.getYear(), dt.getMonthOfYear() - 1, dt.getDayOfMonth()
                 );
 
                 Button button = new Button(this);

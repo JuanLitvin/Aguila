@@ -84,16 +84,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadDevices() {
         try {
-            List<Map<String, String>> devices = new ArrayList<>();
-            JSONArray dev = User.getDevices();
-            for (int i = 0; i < dev.length(); i++) {
-                JSONObject obj = dev.getJSONObject(i);
-                Map<String, String> map = new ArrayMap<>();
-                map.put("text1", obj.getString("name"));
-                map.put("text2", obj.getString("owner"));
-                devices.add(map);
-            }
-            listDevices.setAdapter(new SimpleAdapter(this, devices, R.layout.devices_list, new String[] {"text1", "text2"}, new int[] {R.id.text1, R.id.text2}));
+            List<Device> devices = User.getDevices();
+            listDevices.setAdapter(new DeviceListAdapter(this, devices));
         } catch (Exception e) {}
     }
 
