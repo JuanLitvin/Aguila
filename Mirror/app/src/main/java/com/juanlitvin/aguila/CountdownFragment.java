@@ -54,9 +54,9 @@ public class CountdownFragment extends MirrorModule {
         handler.post(new Runnable(){
             public void run(){
                 TimeZone.setDefault(timeZone);
-                DateTime start = new DateTime(DateTimeZone.forTimeZone(timeZone));
-                DateTime end = new DateTime(millis, DateTimeZone.forTimeZone(timeZone));
-                lblResultado.setText(Days.daysBetween(start, end).getDays() + " days until " + until);
+                DateTime start = new DateTime(DateTimeZone.forTimeZone(timeZone)).withTimeAtStartOfDay();
+                DateTime end = new DateTime(millis, DateTimeZone.forTimeZone(timeZone)).withTimeAtStartOfDay();
+                lblResultado.setText((Days.daysBetween(start, end).getDays() + 1) + " days until " + until);
                 //execute again when next day happens
                 handler.postDelayed(this, DateTime.now(DateTimeZone.forTimeZone(timeZone)).withMillisOfSecond(0).withSecondOfMinute(0).withMinuteOfHour(0).withHourOfDay(0).plusDays(1).getMillis() - DateTime.now().getMillis());
             }
