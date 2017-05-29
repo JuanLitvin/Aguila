@@ -2,6 +2,7 @@ package com.juanlitvin.fenix;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v4.util.ArrayMap;
@@ -56,14 +57,47 @@ public class DeviceListAdapter extends ArrayAdapter {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showYesNoDialog("Sign out?", "Would you like to sign out of the device \"" + device.getName() + "\".", new YesNoHandler() {
+                    @Override
+                    public void onYes() {
+                        final Device device = User.getDevices().get(position);
+                        User.getDevices().remove(device);
+                        notifyDataSetChanged();
 
+                        RequestParams params = new RequestParams();
+                        params.put("device-id", device.getIdDevice());
+
+                        Map<String, String> headers = new ArrayMap<>();
+                        headers.put("Token", "?QKGe,q$uxkwi7cJ-h4zsuW],^{BFEurhNkfW~-TAnUGc%TGJ4PqmIIp3(FNBj%O");
+                        headers.put("Auth", User.getApiKey());
+
+                        RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/mirror/logout", params, headers, new RESTClient.ResponseHandler() {
+                            @Override
+                            public void onSuccess(int code, String responseBody) {
+
+                            }
+
+                            @Override
+                            public void onFailure(int code, String responseBody, Throwable error) {
+                                Toast.makeText(getContext(), "Hubo un error al intentar cerrar sesión en el dispositivo", Toast.LENGTH_SHORT).show();
+                                User.getDevices().add(position, device);
+                                notifyDataSetChanged();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onNo() {
+
+                    }
+                });
             }
         });
 
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                MainActivity.context.startActivity(new Intent(MainActivity.context, EditDeviceActivity.class).putExtra("id", device.getIdDevice()));
             }
         });
 
