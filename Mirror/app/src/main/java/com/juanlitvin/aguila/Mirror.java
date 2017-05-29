@@ -11,7 +11,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.ArrayMap;
 
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.RemoteMessage;
 import com.loopj.android.http.RequestParams;
+import com.squareup.otto.Subscribe;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -337,6 +339,11 @@ public class Mirror {
     }
 
     public static void setFCMToken(Context context, String token) {
+        if (idDevice == null) {
+            //device has not been registered
+            return;
+        }
+
         RequestParams params = new RequestParams();
         params.put("device-id", idDevice);
         params.put("fcm-token", token);
