@@ -127,27 +127,21 @@ public class SettingsConfigActivity extends AppCompatActivity {
 
                 pendingViews.add(editText); //add to pending views for its value to be saved later
                 return editText;
-            case "datetime":
+            case "date":
                 Calendar now = Calendar.getInstance();
                 final DateTime dt = new DateTime(User.getConfig().getJSONObject("settings").getJSONObject(pkg).getLong("millis"));
                 final DatePickerDialog dpd = DatePickerDialog.newInstance(
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePickerDialog view, final int year, final int monthOfYear, final int dayOfMonth) {
-                                TimePickerDialog tpd = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
-                                    @Override
-                                    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
-                                        try {
-                                            DateTime datetime = new DateTime(year, monthOfYear + 1, dayOfMonth, hourOfDay, minute, 0);
+                                try {
+                                    DateTime datetime = new DateTime(year, monthOfYear + 1, dayOfMonth, 0, 0);
 
-                                            settings.getJSONObject(pkg).put(field, Long.toString(datetime.getMillis()));
+                                    settings.getJSONObject(pkg).put(field, Long.toString(datetime.getMillis()));
 
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }, dt.getHourOfDay(), dt.getMinuteOfHour(), dt.getSecondOfDay(), true);
-                                tpd.show(getFragmentManager(), "timePickerDialog");
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }, dt.getYear(), dt.getMonthOfYear() - 1, dt.getDayOfMonth()
                 );
@@ -163,6 +157,71 @@ public class SettingsConfigActivity extends AppCompatActivity {
                 });
 
                 return button;
+            case "time":
+                Calendar now2 = Calendar.getInstance();
+                final DateTime dt2 = new DateTime(User.getConfig().getJSONObject("settings").getJSONObject(pkg).getLong("millis"));
+                final TimePickerDialog tpd = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+                        try {
+                            DateTime datetime = new DateTime().withHourOfDay(hourOfDay).withMinuteOfHour(minute);
+
+                            settings.getJSONObject(pkg).put(field, Long.toString(datetime.getMillis()));
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, dt2.getHourOfDay(), dt2.getMinuteOfHour(), dt2.getSecondOfDay(), true);
+
+
+                Button button2 = new Button(this);
+                button2.setText("Set date");
+                button2.setBackgroundColor(Color.parseColor("#FF0000"));
+                button2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        tpd.show(getFragmentManager(), "timePickerDialog");
+                    }
+                });
+
+                return button2;
+            case "datetime":
+                Calendar now3 = Calendar.getInstance();
+                final DateTime dt3 = new DateTime(User.getConfig().getJSONObject("settings").getJSONObject(pkg).getLong("millis"));
+                final DatePickerDialog dpd3 = DatePickerDialog.newInstance(
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePickerDialog view, final int year, final int monthOfYear, final int dayOfMonth) {
+                                TimePickerDialog tpd = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+                                    @Override
+                                    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+                                        try {
+                                            DateTime datetime = new DateTime(year, monthOfYear + 1, dayOfMonth, hourOfDay, minute, 0);
+
+                                            settings.getJSONObject(pkg).put(field, Long.toString(datetime.getMillis()));
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }, dt3.getHourOfDay(), dt3.getMinuteOfHour(), dt3.getSecondOfDay(), true);
+                                tpd.show(getFragmentManager(), "timePickerDialog");
+                            }
+                        }, dt3.getYear(), dt3.getMonthOfYear() - 1, dt3.getDayOfMonth()
+                );
+
+                Button button3 = new Button(this);
+                button3.setText("Set date");
+                button3.setBackgroundColor(Color.parseColor("#FF0000"));
+                button3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dpd3.show(getFragmentManager(), "DateTimePicker");
+                    }
+                });
+
+                return button3;
             default:
                 EditText editText2 = new EditText(this);
                 editText2.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
