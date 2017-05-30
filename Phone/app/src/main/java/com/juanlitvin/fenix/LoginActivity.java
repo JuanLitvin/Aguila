@@ -22,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.TextInputLayout;
 import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -32,6 +33,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,12 +75,30 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
         context = this;
 
+        //if was logged out, skip splash; if not, continue
+        if (getIntent().hasExtra("loggedOut")) hideSplash();
+
         RESTClient.init(this);
 
         initAuth();
 
         assignViews();
         setListeners();
+    }
+
+    private void hideSplash() {
+        findViewById(R.id.layoutLogin).setVisibility(View.VISIBLE);
+        findViewById(R.id.layoutSplash).setVisibility(View.GONE);
+    }
+
+    private void showProgress(boolean show) {
+        if (show) {
+            findViewById(R.id.layoutLogin).setVisibility(View.GONE);
+            findViewById(R.id.loginProgress).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.layoutLogin).setVisibility(View.VISIBLE);
+            findViewById(R.id.loginProgress).setVisibility(View.GONE);
+        }
     }
 
     private void initAuth() {
@@ -97,15 +117,25 @@ public class LoginActivity extends Activity {
                     User.loadFromFirebaseUser(user.getUid(), new User.LoginCallback() {
                         @Override
                         public void onComplete(int statusCode, JSONObject response) {
+                            showProgress(false);
                             startActivity(new Intent(LoginActivity.context, MainActivity.class));
                             finish();
                         }
 
                         @Override
                         public void onError(int statusCode, Throwable error) {
+                            showProgress(false);
                             Toast.makeText(LoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
+                } else {
+                    //no user signed in
+                    new android.os.Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            hideSplash();
+                        }
+                    }, 3000);
                 }
             }
         };
@@ -174,10 +204,10 @@ public class LoginActivity extends Activity {
         String pass = txtPassword.getText().toString();
 
         //check if credentials are valid
-        if (!areCredentialsValid(email, pass)) {
-            //TODO: SHOW ERROR MESSAGE
-            return;
-        }
+        if (!areCredentialsValid(email, pass)) return;
+
+        //show progress if credentials are valid
+        showProgress(true);
 
         //temp bug fix
         shouldLoad = true;
@@ -195,16 +225,18 @@ public class LoginActivity extends Activity {
     }
 
     private void attemptRegister() {
+        showProgress(true);
+
         final String name = txtName.getText().toString();
         final String email = txtEmail.getText().toString();
         String pass = txtPassword.getText().toString();
         String confirmPass = txtConfirmPassword.getText().toString();
 
         //check if credentials are valid
-        if (!areCredentialsValid(email, pass, confirmPass, name)) {
-            //TODO: SHOW ERROR MESSAGE
-            return;
-        }
+        if (!areCredentialsValid(email, pass, confirmPass, name)) return;
+
+        //show progress if credentials are valid
+        showProgress(true);
 
         //temp bug fix
         shouldLoad = true;
@@ -240,21 +272,55 @@ public class LoginActivity extends Activity {
     }
 
     private boolean areCredentialsValid(String email, String password) {
-        return isEmailValid(email) && isPasswordValid(password);
+        boolean result = true;
+
+        //go from bottom to top, so first error has focus
+
+        if (password.isEmpty()) {
+            setEditTextError(R.id.txtPasswordTIL, "You need to enter a password");
+            findViewById(R.id.txtPassword).requestFocus();
+            result = false;
+        } else if (!isPasswordValid(password)) {
+            setEditTextError(R.id.txtPasswordTIL, "This password is invalid");
+            findViewById(R.id.txtPassword).requestFocus();
+            result = false;
+        } else {
+            setEditTextError(R.id.txtPasswordTIL, null);
+        }
+
+        if (email.isEmpty()) {
+            setEditTextError(R.id.txtEmailTIL, "You need to enter an email");
+            findViewById(R.id.txtEmail).requestFocus();
+            result = false;
+        } else if (!isEmailValid(email)) {
+            setEditTextError(R.id.txtEmailTIL, "This email address is invalid");
+            findViewById(R.id.txtEmail).requestFocus();
+            result = false;
+        } else {
+            setEditTextError(R.id.txtEmailTIL, null);
+        }
+
+        return result;
     }
 
     private boolean areCredentialsValid(String email, String password, String confirmPassword, String name) {
         return isEmailValid(email) && isPasswordValid(password);
     }
 
+    private void setEditTextError(int viewId, String error) {
+        try {
+            ((TextInputLayout)findViewById(viewId)).setError(error);
+        } catch (Exception e) {
+            Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
+        return email.contains("@") && email.contains(".");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() >= 6;
     }
 
 }

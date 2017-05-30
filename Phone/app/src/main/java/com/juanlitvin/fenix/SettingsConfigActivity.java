@@ -177,7 +177,7 @@ public class SettingsConfigActivity extends AppCompatActivity {
 
                 Button button2 = new Button(this);
                 button2.setText("Set date");
-                button2.setBackgroundColor(Color.parseColor("#FF0000"));
+                button2.setBackgroundColor(R.color.colorAccent);
                 button2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -296,6 +296,12 @@ public class SettingsConfigActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
     }
 
 }

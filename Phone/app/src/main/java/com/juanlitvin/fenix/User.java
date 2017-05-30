@@ -29,6 +29,16 @@ public class User {
         void onError(int statusCode, Throwable error);
     }
 
+    public static void clear() {
+        idUser = null;
+        userName = null;
+        email = null;
+        apiKey = null;
+        config = null;
+        devices = null;
+        availableModules = null;
+    }
+
     public static void loadFromFirebaseUser(String uid, final LoginCallback callback) {
         setIdUser(uid);
 
@@ -93,10 +103,10 @@ public class User {
         RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/config/edit", params, headers, handler);
     }
 
-    public static void registerMirror(String regCode, RESTClient.ResponseHandler handler) {
+    public static void registerMirror(String regCode, String name, RESTClient.ResponseHandler handler) {
         RequestParams params = new RequestParams();
         params.put("reg-code", regCode);
-        params.put("name", "New Mirror");
+        params.put("name", name);
 
         Map<String, String> headers = new ArrayMap<>();
         headers.put("Token", "?QKGe,q$uxkwi7cJ-h4zsuW],^{BFEurhNkfW~-TAnUGc%TGJ4PqmIIp3(FNBj%O");

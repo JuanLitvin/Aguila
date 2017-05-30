@@ -92,7 +92,7 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
     private void editSettings() {
         try {
             startActivity(new Intent(ConfigActivity.this, SettingsConfigActivity.class).putExtra("settings", User.getConfig().getJSONObject("settings").toString()).putExtra("available-modules", User.getAvailableModules().toString()));
-            overridePendingTransition(R.anim.fab_slide_in_from_right, R.anim.fab_slide_out_to_left);
+            overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -7,16 +7,18 @@
     tools:context="com.juanlitvin.fenix.ConfigActivity">
 
     <TextView
-        android:text="Toque sobre cualquier cuadrante para cambiar su widget"
+        android:text="Tap a box to edit its widget"
         android:gravity="center"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_margin="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp">
@@ -128,12 +130,15 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnConfig"
-            android:text="Settings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnConfig"
+        android:text="Edit Settings"
+        android:textColor="@android:color/white"
+        android:background="@color/colorAccent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 
 </LinearLayout>

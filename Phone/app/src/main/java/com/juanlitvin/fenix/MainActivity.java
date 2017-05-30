@@ -8,6 +8,9 @@ import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -16,6 +19,7 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -56,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         fabAddDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialogAddDevice();
+                startActivity(new Intent(MainActivity.this, RegCodeActivity.class).putExtra("addMode", 1));
                 fabMenu.close(true);
             }
         });
@@ -65,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         fabSignInDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialogSignInDevice();
+                startActivity(new Intent(MainActivity.this, RegCodeActivity.class));
                 fabMenu.close(true);
             }
         });
@@ -89,85 +93,26 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {}
     }
 
-    private void showDialogAddDevice() {
-        View view = getLayoutInflater().inflate(R.layout.alert_input_regcode, null);
-        final EditText txtRegCode = (EditText) view.findViewById(R.id.txtRegCode);
-
-        new AlertDialog.Builder(this)
-                .setTitle("Add Device")
-                .setView(view)
-                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(final DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-
-                        //show before start loading
-                        final ProgressDialog progress = new ProgressDialog(MainActivity.context);
-                        progress.setMessage("Loading...");
-                        progress.setCancelable(false);
-                        progress.show();
-
-                        User.registerMirror(txtRegCode.getText().toString(), new RESTClient.ResponseHandler() {
-                            @Override
-                            public void onSuccess(int code, String responseBody) {
-                                progress.dismiss();
-                            }
-
-                            @Override
-                            public void onFailure(int code, String responseBody, Throwable error) {
-                                progress.dismiss();
-                                Toast.makeText(MainActivity.this, "No se puddo registrar el dispositivo.\nInténtelo nuevamnete.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                })
-                .create().show();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
     }
 
-    private void showDialogSignInDevice() {
-        View view = getLayoutInflater().inflate(R.layout.alert_input_regcode, null);
-        final EditText txtRegCode = (EditText) view.findViewById(R.id.txtRegCode);
-
-        new AlertDialog.Builder(this)
-                .setTitle("Sign in - Device")
-                .setView(view)
-                .setPositiveButton("Sign In", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(final DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-
-                        //show before start loading
-                        final ProgressDialog progress = new ProgressDialog(MainActivity.context);
-                        progress.setMessage("Loading...");
-                        progress.setCancelable(false);
-                        progress.show();
-
-                        User.loginMirror(txtRegCode.getText().toString(), new RESTClient.ResponseHandler() {
-                            @Override
-                            public void onSuccess(int code, String responseBody) {
-                                progress.dismiss();
-                            }
-
-                            @Override
-                            public void onFailure(int code, String responseBody, Throwable error) {
-                                progress.dismiss();
-                                Toast.makeText(MainActivity.this, "No se pudo iniciar sesión en el dispositivo.\nInténtelo nuevamnete.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                })
-                .create().show();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.menu_signOut:
+                FirebaseAuth.getInstance().signOut();
+                User.clear();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class).putExtra("loggedOut", 1));
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
+
 }

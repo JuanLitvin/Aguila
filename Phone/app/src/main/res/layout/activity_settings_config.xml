@@ -12,6 +12,8 @@
 
         <LinearLayout
             android:id="@+id/layoutSettings"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
             android:paddingLeft="16dp"
