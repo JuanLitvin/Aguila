@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class ConfigActivity extends AppCompatActivity implements View.OnClickListener {
+public class ConfigActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
 
     public static List<String> availableModuleNames = new ArrayList<>();
     public static List<Integer> availableModuleIds = new ArrayList<>();
@@ -81,6 +81,14 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
         btn6.setOnClickListener(this);
         btn7.setOnClickListener(this);
 
+        btn1.setOnLongClickListener(this);
+        btn2.setOnLongClickListener(this);
+        btn3.setOnLongClickListener(this);
+        btn4.setOnLongClickListener(this);
+        btn5.setOnLongClickListener(this);
+        btn6.setOnLongClickListener(this);
+        btn7.setOnLongClickListener(this);
+
         btnConfig.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,7 +100,6 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
     private void editSettings() {
         try {
             startActivity(new Intent(ConfigActivity.this, SettingsConfigActivity.class).putExtra("settings", User.getConfig().getJSONObject("settings").toString()).putExtra("available-modules", User.getAvailableModules().toString()));
-            overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,6 +109,7 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
         final String IdFragment = (String) view.getTag();
 
+        //TODO: Select module in new activity
         new AlertDialog.Builder(this)
                 .setTitle("Select new module")
                 .setItems(availableModuleNames.toArray(new String[availableModuleIds.size()]), new DialogInterface.OnClickListener() {
@@ -234,4 +242,16 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
         overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
     }
 
+    @Override
+    public boolean onLongClick(View view) {
+        final String idFragment = (String) view.getTag();
+        final int idModule = 0;
+
+        try {
+            startActivity(new Intent(ConfigActivity.this, SettingsConfigActivity.class).putExtra("idFragment", idFragment).putExtra("idModule", 2).putExtra("settings", User.getConfig().getJSONObject("settings").toString()).putExtra("available-modules", User.getAvailableModules().toString()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
 }

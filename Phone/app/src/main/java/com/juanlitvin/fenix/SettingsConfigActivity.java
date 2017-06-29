@@ -57,22 +57,27 @@ public class SettingsConfigActivity extends AppCompatActivity {
             while(iterator.hasNext()) {
                 //each module. has multiple keys
                 final String key = (String)iterator.next();
-                JSONObject moduleFields = getJSONObjectByModulePackage(key).getJSONObject("fields");
-                Iterator<String> moduleIterator = moduleFields.keys();
-                while (moduleIterator.hasNext()) {
-                    //each key in each module
-                    final String fieldKey = (String) moduleIterator.next();
-                    JSONObject fieldValue = moduleFields.getJSONObject(fieldKey);
-                    View view = getConfigViewByFieldConfig(fieldValue, key, fieldKey);
 
-                    TextView lbl = new TextView(this);
-                    lbl.setText(fieldKey.substring(0, 1).toUpperCase() + fieldKey.substring(1) + ":");
-                    layout.addView(lbl);
 
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    params.setMargins(0, 0, 0, dpToPx(20));
-                    view.setLayoutParams(params);
-                    layout.addView(view);
+                if (true) {//getModuleIdFromPackage(key) == getIntent().getStringExtra("idModule")) { //key = package from settings object
+
+                    JSONObject moduleFields = getJSONObjectByModulePackage(key).getJSONObject("fields");
+                    Iterator<String> moduleIterator = moduleFields.keys();
+                    while (moduleIterator.hasNext()) {
+                        //each key in each module
+                        final String fieldKey = (String) moduleIterator.next();
+                        JSONObject fieldValue = moduleFields.getJSONObject(fieldKey);
+                        View view = getConfigViewByFieldConfig(fieldValue, key, fieldKey);
+
+                        TextView lbl = new TextView(this);
+                        lbl.setText(fieldKey.substring(0, 1).toUpperCase() + fieldKey.substring(1) + ":");
+                        layout.addView(lbl);
+
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                        params.setMargins(0, 0, 0, dpToPx(20));
+                        view.setLayoutParams(params);
+                        layout.addView(view);
+                    }
                 }
             }
 
@@ -85,6 +90,22 @@ public class SettingsConfigActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private String getModuleIdFromPackage(String pkg) {
+        try {
+            JSONArray modules = User.getAvailableModules();
+            for (int i = 0; i < modules.length(); i++) {
+                if (modules.getJSONObject(i).getString("package").equals(pkg)) {
+                    //is the module, return id
+                    return Integer.toString(modules.getJSONObject(i).getInt("id"));
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     private View getConfigViewByFieldConfig(JSONObject fieldValue, final String pkg, final String field) throws JSONException {
@@ -291,7 +312,7 @@ public class SettingsConfigActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 finish();
-                overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -301,7 +322,6 @@ public class SettingsConfigActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
     }
 
 }
