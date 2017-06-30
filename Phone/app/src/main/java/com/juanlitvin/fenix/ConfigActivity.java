@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -38,7 +39,7 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
     private static JSONObject modules;
 
 
-    Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btnConfig;
+    Button btn1, btn2, btn3, btn4, btn5, btn6, btn7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,6 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
         btn5 = (Button) findViewById(R.id.fragment5);
         btn6 = (Button) findViewById(R.id.fragment6);
         btn7 = (Button) findViewById(R.id.fragment7);
-        btnConfig = (Button) findViewById(R.id.btnConfig);
     }
 
     private void setListeners() {
@@ -88,21 +88,6 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
         btn5.setOnLongClickListener(this);
         btn6.setOnLongClickListener(this);
         btn7.setOnLongClickListener(this);
-
-        btnConfig.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editSettings();
-            }
-        });
-    }
-
-    private void editSettings() {
-        try {
-            startActivity(new Intent(ConfigActivity.this, SettingsConfigActivity.class).putExtra("settings", User.getConfig().getJSONObject("settings").toString()).putExtra("available-modules", User.getAvailableModules().toString()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -245,13 +230,37 @@ public class ConfigActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public boolean onLongClick(View view) {
         final String idFragment = (String) view.getTag();
-        final int idModule = 0;
+        final int idModule = getModuleIdForFragment(idFragment);
+
+        if (idModule < 1) { //module was not found
+            Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+            return true;
+        }
 
         try {
-            startActivity(new Intent(ConfigActivity.this, SettingsConfigActivity.class).putExtra("idFragment", idFragment).putExtra("idModule", 2).putExtra("settings", User.getConfig().getJSONObject("settings").toString()).putExtra("available-modules", User.getAvailableModules().toString()));
+            startActivity(new Intent(ConfigActivity.this, SettingsConfigActivity.class).putExtra("idFragment", idFragment).putExtra("idModule", idModule).putExtra("settings", User.getConfig().getJSONObject("settings").toString()).putExtra("available-modules", User.getAvailableModules().toString()));
         } catch (Exception e) {
             e.printStackTrace();
         }
         return true;
+    }
+
+    private int getModuleIdForFragment(String idFragment) {
+        Button btnFragment = (Button) findViewById(getResources().getIdentifier(idFragment.replace("Id", "fragment"), "id", getPackageName()));
+        JSONArray modules = User.getAvailableModules();
+
+        int moduleId = -1;
+
+        for (int i = 0; i < availableModuleNames.size(); i++) {
+            try {
+                if (availableModuleNames.get(i).equals(btnFragment.getText().toString())) {
+                    //i is the module index
+                    moduleId = availableModuleIds.get(i); //module id
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return moduleId;
     }
 }

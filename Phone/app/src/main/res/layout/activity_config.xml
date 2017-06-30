@@ -132,13 +132,5 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnConfig"
-        android:text="Edit Settings"
-        android:textColor="@android:color/white"
-        android:background="@color/colorAccent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
 
 </LinearLayout>

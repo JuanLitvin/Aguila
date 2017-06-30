@@ -2,9 +2,11 @@ package com.juanlitvin.fenix;
 
 import android.app.ProgressDialog;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -59,9 +61,18 @@ public class SettingsConfigActivity extends AppCompatActivity {
                 final String key = (String)iterator.next();
 
 
-                if (true) {//getModuleIdFromPackage(key) == getIntent().getStringExtra("idModule")) { //key = package from settings object
+                if (getModuleIdFromPackage(key) == getIntent().getIntExtra("idModule", -1)) { //key = package from settings object
 
                     JSONObject moduleFields = getJSONObjectByModulePackage(key).getJSONObject("fields");
+
+                    if (moduleFields.length() < 1) { //module has not custom settings
+                        TextView lbl = new TextView(this);
+                        lbl.setText("This module has no settings");
+                        lbl.setGravity(Gravity.CENTER);
+                        lbl.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                        layout.addView(lbl);
+                    }
+
                     Iterator<String> moduleIterator = moduleFields.keys();
                     while (moduleIterator.hasNext()) {
                         //each key in each module
@@ -92,20 +103,20 @@ public class SettingsConfigActivity extends AppCompatActivity {
         }
     }
 
-    private String getModuleIdFromPackage(String pkg) {
+    private int getModuleIdFromPackage(String pkg) {
         try {
             JSONArray modules = User.getAvailableModules();
             for (int i = 0; i < modules.length(); i++) {
                 if (modules.getJSONObject(i).getString("package").equals(pkg)) {
                     //is the module, return id
-                    return Integer.toString(modules.getJSONObject(i).getInt("id"));
+                    return modules.getJSONObject(i).getInt("id");
                 }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "";
+        return -2;
     }
 
     private View getConfigViewByFieldConfig(JSONObject fieldValue, final String pkg, final String field) throws JSONException {
@@ -169,7 +180,8 @@ public class SettingsConfigActivity extends AppCompatActivity {
 
                 Button button = new Button(this);
                 button.setText("Set date");
-                button.setBackgroundColor(Color.parseColor("#FF0000"));
+                if (Build.VERSION.SDK_INT >= 23) button.setBackgroundColor(getResources().getColor(R.color.colorAccent, getTheme()));
+                else button.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -198,7 +210,8 @@ public class SettingsConfigActivity extends AppCompatActivity {
 
                 Button button2 = new Button(this);
                 button2.setText("Set date");
-                button2.setBackgroundColor(R.color.colorAccent);
+                if (Build.VERSION.SDK_INT >= 23) button2.setBackgroundColor(getResources().getColor(R.color.colorAccent, getTheme()));
+                else button2.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 button2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -234,7 +247,8 @@ public class SettingsConfigActivity extends AppCompatActivity {
 
                 Button button3 = new Button(this);
                 button3.setText("Set date");
-                button3.setBackgroundColor(Color.parseColor("#FF0000"));
+                if (Build.VERSION.SDK_INT >= 23) button3.setBackgroundColor(getResources().getColor(R.color.colorAccent, getTheme()));
+                else button3.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 button3.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
