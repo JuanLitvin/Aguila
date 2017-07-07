@@ -53,7 +53,60 @@ public class DeviceListAdapter extends ArrayAdapter {
         ImageButton btnEdit = (ImageButton) v.findViewById(R.id.btnEdit);
         ImageButton btnRemove = (ImageButton) v.findViewById(R.id.btnRemove);
 
-        //listeners
+        if (device.isOwner()) { //only will set listeners to owner functions if user is owner of the device
+            //listeners
+            btnEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MainActivity.context.startActivity(new Intent(MainActivity.context, EditDeviceActivity.class).putExtra("id", device.getIdDevice()));
+                }
+            });
+
+            btnRemove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showYesNoDialog("Remove?", "Would you like to remove the device \"" + device.getName() + "\". This device will no longer show as owned as you, unless you register it again.", new YesNoHandler() {
+                        @Override
+                        public void onYes() {
+                            final Device device = User.getDevices().get(position);
+                            User.getDevices().remove(device);
+                            notifyDataSetChanged();
+
+                            RequestParams params = new RequestParams();
+                            params.put("device-id", device.getIdDevice());
+
+                            Map<String, String> headers = new ArrayMap<>();
+                            headers.put("Token", "?QKGe,q$uxkwi7cJ-h4zsuW],^{BFEurhNkfW~-TAnUGc%TGJ4PqmIIp3(FNBj%O");
+                            headers.put("Auth", User.getApiKey());
+
+                            RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/mirror/remove", params, headers, new RESTClient.ResponseHandler() {
+                                @Override
+                                public void onSuccess(int code, String responseBody) {
+
+                                }
+
+                                @Override
+                                public void onFailure(int code, String responseBody, Throwable error) {
+                                    Toast.makeText(getContext(), "Hubo un error al intentar eliminar el dispositivo", Toast.LENGTH_SHORT).show();
+                                    User.getDevices().add(position, device);
+                                    notifyDataSetChanged();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onNo() {
+
+                        }
+                    });
+                }
+            });
+        } else {
+            btnEdit.setVisibility(View.GONE);
+            btnRemove.setVisibility(View.GONE);
+        }
+
+        //global listeners
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,53 +133,6 @@ public class DeviceListAdapter extends ArrayAdapter {
                             @Override
                             public void onFailure(int code, String responseBody, Throwable error) {
                                 Toast.makeText(getContext(), "Hubo un error al intentar cerrar sesión en el dispositivo", Toast.LENGTH_SHORT).show();
-                                User.getDevices().add(position, device);
-                                notifyDataSetChanged();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onNo() {
-
-                    }
-                });
-            }
-        });
-
-        btnEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity.context.startActivity(new Intent(MainActivity.context, EditDeviceActivity.class).putExtra("id", device.getIdDevice()));
-            }
-        });
-
-        btnRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showYesNoDialog("Remove?", "Would you like to remove the device \"" + device.getName() + "\". This device will no longer show as owned as you, unless you register it again.", new YesNoHandler() {
-                    @Override
-                    public void onYes() {
-                        final Device device = User.getDevices().get(position);
-                        User.getDevices().remove(device);
-                        notifyDataSetChanged();
-
-                        RequestParams params = new RequestParams();
-                        params.put("device-id", device.getIdDevice());
-
-                        Map<String, String> headers = new ArrayMap<>();
-                        headers.put("Token", "?QKGe,q$uxkwi7cJ-h4zsuW],^{BFEurhNkfW~-TAnUGc%TGJ4PqmIIp3(FNBj%O");
-                        headers.put("Auth", User.getApiKey());
-
-                        RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/mirror/remove", params, headers, new RESTClient.ResponseHandler() {
-                            @Override
-                            public void onSuccess(int code, String responseBody) {
-
-                            }
-
-                            @Override
-                            public void onFailure(int code, String responseBody, Throwable error) {
-                                Toast.makeText(getContext(), "Hubo un error al intentar eliminar el dispositivo", Toast.LENGTH_SHORT).show();
                                 User.getDevices().add(position, device);
                                 notifyDataSetChanged();
                             }
