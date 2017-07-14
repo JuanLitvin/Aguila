@@ -79,7 +79,7 @@ public class DeviceListAdapter extends ArrayAdapter {
                             headers.put("Token", "?QKGe,q$uxkwi7cJ-h4zsuW],^{BFEurhNkfW~-TAnUGc%TGJ4PqmIIp3(FNBj%O");
                             headers.put("Auth", User.getApiKey());
 
-                            RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/mirror/remove", params, headers, new RESTClient.ResponseHandler() {
+                            RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/phone/removemirror", params, headers, new RESTClient.ResponseHandler() {
                                 @Override
                                 public void onSuccess(int code, String responseBody) {
 
@@ -124,7 +124,7 @@ public class DeviceListAdapter extends ArrayAdapter {
                         headers.put("Token", "?QKGe,q$uxkwi7cJ-h4zsuW],^{BFEurhNkfW~-TAnUGc%TGJ4PqmIIp3(FNBj%O");
                         headers.put("Auth", User.getApiKey());
 
-                        RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/mirror/logout", params, headers, new RESTClient.ResponseHandler() {
+                        RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/phone/signoutmirror", params, headers, new RESTClient.ResponseHandler() {
                             @Override
                             public void onSuccess(int code, String responseBody) {
 
@@ -148,7 +148,7 @@ public class DeviceListAdapter extends ArrayAdapter {
         });
 
         lblDeviceName.setText(device.getName());
-        lblUserName.setText(device.getOwnerName());
+        lblUserName.setText(device.getLoggedName());
 
         return v;
     }

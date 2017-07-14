@@ -82,7 +82,7 @@ public class User {
         List<Device> listDevices = new ArrayList<>();
         for (int i = 0; i < devices.length(); i++) {
             try {
-                listDevices.add(new Device(devices.getJSONObject(i).getString("id"), devices.getJSONObject(i).getString("name"), devices.getJSONObject(i).getString("owner"), "", devices.getJSONObject(i).getInt("is-owner") == 1));
+                listDevices.add(new Device(devices.getJSONObject(i).getString("id"), devices.getJSONObject(i).getString("id-owner"), devices.getJSONObject(i).getString("name"), devices.getJSONObject(i).getString("owner"), "", devices.getJSONObject(i).getInt("is-owner") == 1));
             } catch (Exception e) {
                 e.printStackTrace();
             }

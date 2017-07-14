@@ -3,13 +3,15 @@ package com.juanlitvin.fenix;
 public class Device {
 
     private String idDevice;
+    private String idOwner;
     private String name;
     private String ownerName;
     private String loggedName;
     private boolean isOwner;
 
-    public Device(String _idDevice, String _name, String _ownerName, String _loggedName, boolean _isOwner) {
+    public Device(String _idDevice, String _idOwner, String _name, String _ownerName, String _loggedName, boolean _isOwner) {
         idDevice = _idDevice;
+        idOwner = _idOwner;
         name = _name;
         ownerName = _ownerName;
         loggedName = _loggedName;
@@ -18,6 +20,10 @@ public class Device {
 
     public String getIdDevice() {
         return idDevice;
+    }
+
+    public String getIdOwner() {
+        return idOwner;
     }
 
     public String getName() {
