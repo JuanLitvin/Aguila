@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initAssistant() {
-        getPermission();
+        //getPermission();
         startGPIO();
         Assistant.init(this, assistantResult);
     }
@@ -233,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
                     .setBackgroundColor(android.R.color.holo_orange_dark)
                     .show();
         }
+
         if (remoteMessage.getData().get("action").toString().equals("userChangedConfig")) {
             //owner was registered, update modules' config
             try {
@@ -241,6 +242,28 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 Mirror.updateConfig();
+            }
+        }
+
+        if (remoteMessage.getData().get("action").toString().equals("voiceCommand")) {
+            try {
+                switch (new JSONObject(remoteMessage.getData().get("extras")).getString("code")) {
+                    case "io.lights.on":
+                        Toast.makeText(context, "Turning lights on", Toast.LENGTH_SHORT).show();
+                        break;
+                    case "io.lights.off":
+                        Toast.makeText(context, "Turning lights off", Toast.LENGTH_SHORT).show();
+                        break;
+                    case "order.uber":
+                        Toast.makeText(context, "Ordering Uber", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        Toast.makeText(context, "There was a problem with the command you just sent", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("MainActivity", "Error trying to get voice command extra", e);
             }
         }
     }

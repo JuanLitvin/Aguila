@@ -30,6 +30,9 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                     case "userChangedConfig":
                         postBus(MainActivity.getBus(), remoteMessage);
                         break;
+                    case "voiceCommand":
+                        postBus(MainActivity.getBus(), remoteMessage);
+                        break;
                 }
             } else {
                 //its a notification

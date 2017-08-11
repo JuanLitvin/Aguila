@@ -30,6 +30,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final int REQUEST_CODE_VOICE = 1000;
     public static Context context;
 
     private ListView listDevices;
@@ -98,6 +99,17 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_VOICE) {
+            if (resultCode == RESULT_OK) {
+                String idDevice = data.getStringExtra("id-device");
+                String code = data.getStringExtra("code");
+                User.sendVoiceCode(idDevice, code);
+            }
+        }
     }
 
     @Override

@@ -4,15 +4,14 @@
     android:paddingBottom="20dp"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white">
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_weight="1"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
@@ -29,7 +28,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="Currnet user:"
+                android:text="Current user:"
                 android:textColor="@android:color/black"
                 android:textSize="15sp"
                 android:layout_width="wrap_content"
@@ -50,6 +49,7 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
@@ -60,28 +60,42 @@
             android:layout_height="wrap_content">
 
             <ImageButton
+                android:id="@+id/btnVoice"
+                android:src="@drawable/ic_keyboard_voice_black_24dp"
+                android:tint="@android:color/white"
+                android:background="@drawable/background_green_round"
+                android:padding="10dp"
+                android:layout_marginRight="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
                 android:id="@+id/btnLogout"
                 android:src="@drawable/ic_exit_to_app_black_24dp"
-                android:tint="@android:color/black"
-                android:background="?android:selectableItemBackground"
+                android:tint="@android:color/white"
+                android:background="@drawable/background_blue_round"
+                android:padding="10dp"
+                android:layout_marginRight="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <ImageButton
                 android:id="@+id/btnEdit"
                 android:src="@drawable/ic_mode_edit_black_24dp"
-                android:tint="@android:color/black"
-                android:background="?android:selectableItemBackground"
-                android:layout_marginLeft="10dp"
+                android:tint="@android:color/white"
+                android:background="@drawable/background_red_round"
+                android:padding="10dp"
+                android:layout_marginRight="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <ImageButton
                 android:id="@+id/btnRemove"
                 android:src="@drawable/ic_delete_black_24dp"
-                android:tint="@android:color/black"
-                android:background="?android:selectableItemBackground"
-                android:layout_marginLeft="10dp"
+                android:tint="@android:color/white"
+                android:background="@drawable/background_yellow_round"
+                android:padding="10dp"
+                android:layout_marginRight="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

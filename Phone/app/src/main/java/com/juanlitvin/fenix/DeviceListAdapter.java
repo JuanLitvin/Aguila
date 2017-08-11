@@ -49,12 +49,14 @@ public class DeviceListAdapter extends ArrayAdapter {
 
         TextView lblDeviceName = (TextView) v.findViewById(R.id.lblDeviceName);
         TextView lblUserName = (TextView) v.findViewById(R.id.lblUserName);
+        ImageButton btnVoice = (ImageButton) v.findViewById(R.id.btnVoice);
         ImageButton btnLogout = (ImageButton) v.findViewById(R.id.btnLogout);
         ImageButton btnEdit = (ImageButton) v.findViewById(R.id.btnEdit);
         ImageButton btnRemove = (ImageButton) v.findViewById(R.id.btnRemove);
 
         if (device.isOwner()) { //only will set listeners to owner functions if user is owner of the device
             //listeners
+
             btnEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -104,6 +106,18 @@ public class DeviceListAdapter extends ArrayAdapter {
         } else {
             btnEdit.setVisibility(View.GONE);
             btnRemove.setVisibility(View.GONE);
+        }
+
+        if (device.getIdLogged().equals(User.getIdUser())) {
+            //user id is same as logged, so this user is logged in to this mirror (might be owner and not be logged in)
+            btnVoice.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((MainActivity)MainActivity.context).startActivityForResult(new Intent(MainActivity.context, VoiceActivity.class).putExtra("id-device", device.getIdDevice()), MainActivity.REQUEST_CODE_VOICE);
+                }
+            });
+        } else {
+            btnVoice.setVisibility(View.GONE);
         }
 
         //global listeners

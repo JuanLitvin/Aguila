@@ -82,7 +82,7 @@ public class User {
         List<Device> listDevices = new ArrayList<>();
         for (int i = 0; i < devices.length(); i++) {
             try {
-                listDevices.add(new Device(devices.getJSONObject(i).getString("id"), devices.getJSONObject(i).getString("id-owner"), devices.getJSONObject(i).getString("name"), devices.getJSONObject(i).getString("owner"), "", devices.getJSONObject(i).getInt("is-owner") == 1));
+                listDevices.add(new Device(devices.getJSONObject(i).getString("id"), devices.getJSONObject(i).getString("id-owner"), devices.getJSONObject(i).getString("id-logged"),devices.getJSONObject(i).getString("name"), devices.getJSONObject(i).getString("owner"), "", devices.getJSONObject(i).getInt("is-owner") == 1));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -124,6 +124,18 @@ public class User {
         headers.put("Auth", User.getApiKey());
 
         RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/mirror/login", params, headers, handler);
+    }
+
+    public static void sendVoiceCode(String idDevice, String code) {
+        RequestParams params = new RequestParams();
+        params.put("id-device", idDevice);
+        params.put("code", code);
+
+        Map<String, String> headers = new ArrayMap<>();
+        headers.put("Token", "?QKGe,q$uxkwi7cJ-h4zsuW],^{BFEurhNkfW~-TAnUGc%TGJ4PqmIIp3(FNBj%O");
+        headers.put("Auth", User.getApiKey());
+
+        RESTClient.post("http://juanlitvin.com/api/aguila/v1/index.php/user/mirror/voice", params, headers, null);
     }
 
     public static String getIdUser() {
