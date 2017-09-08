@@ -18,6 +18,15 @@ import java.util.Random;
 public class GreetingFragment extends MirrorModule {
 
     TextView lblGreeting;
+    String[] greetings = {
+            "Welcome",
+            "Have a nice day",
+            "Hello Sunshine!",
+            "Hi, Sexy!",
+            "Hi there",
+            "Keep it up",
+            "Good day!"
+    };
 
     @Override
     public void init() {
@@ -49,19 +58,6 @@ public class GreetingFragment extends MirrorModule {
     }
 
     private String getRandomGreeting() {
-        switch (new Random().nextInt(5) + 1) {
-            case 1:
-                return "Welcome";
-            case 2:
-                return "Hello Sunshine!";
-            case 3:
-                return "Hi, Sexy!";
-            case 4:
-                return "Power up and have a good day";
-            case 5:
-                return "Well, hi there";
-            default:
-                return "Hello to you";
-        }
+        return greetings[new Random().nextInt(greetings.length)];
     }
 }

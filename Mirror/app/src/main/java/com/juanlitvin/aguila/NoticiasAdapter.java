@@ -33,22 +33,22 @@ public class NoticiasAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LinearLayout layout = new LinearLayout(c);
-        layout.setPadding(0, dpToPx(16), 0, dpToPx(16));
+        layout.setPadding(0, dpToPx(5), 0, dpToPx(5));
         layout.setOrientation(LinearLayout.HORIZONTAL);
         layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         ImageView img = new ImageView(c);
         img.setImageDrawable(c.getDrawable(R.drawable.ic_news));
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(50), dpToPx(50));
-        params.setMargins(0, dpToPx(10), 0, 0);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(20), dpToPx(20));
+        params.setMargins(0, dpToPx(0), 0, 0);
         img.setLayoutParams(params);
         layout.addView(img);
 
         TextView txt = new TextView(c);
         txt.setText(Html.fromHtml(list.get(position)));
         txt.setTextColor(Color.parseColor("#DDDDDD"));
-        txt.setTextSize(15f);
-        txt.setPadding(dpToPx(30), 0, 0, 0);
+        txt.setTextSize(17f);
+        txt.setPadding(dpToPx(10), 0, 0, 0);
         txt.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         layout.addView(txt);
 
