@@ -85,7 +85,7 @@ public class VoiceActivity extends AppCompatActivity {
         @Override
         public void onResult(AIResponse result) {
             Toast.makeText(VoiceActivity.this, result.getResult().getAction(), Toast.LENGTH_SHORT).show();
-            setResult(RESULT_OK, new Intent().putExtra("id-device", getIntent().getStringExtra("id-device")).putExtra("result", result.getResult().getAction()));
+            setResult(RESULT_OK, new Intent().putExtra("id-device", getIntent().getStringExtra("id-device")).putExtra("code", result.getResult().getAction()));
             finish();
         }
 

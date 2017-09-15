@@ -51,18 +51,10 @@ public class DeviceListAdapter extends ArrayAdapter {
         TextView lblUserName = (TextView) v.findViewById(R.id.lblUserName);
         ImageButton btnVoice = (ImageButton) v.findViewById(R.id.btnVoice);
         ImageButton btnLogout = (ImageButton) v.findViewById(R.id.btnLogout);
-        ImageButton btnEdit = (ImageButton) v.findViewById(R.id.btnEdit);
         ImageButton btnRemove = (ImageButton) v.findViewById(R.id.btnRemove);
 
         if (device.isOwner()) { //only will set listeners to owner functions if user is owner of the device
             //listeners
-
-            btnEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    MainActivity.context.startActivity(new Intent(MainActivity.context, EditDeviceActivity.class).putExtra("id", device.getIdDevice()));
-                }
-            });
 
             btnRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -104,7 +96,6 @@ public class DeviceListAdapter extends ArrayAdapter {
                 }
             });
         } else {
-            btnEdit.setVisibility(View.GONE);
             btnRemove.setVisibility(View.GONE);
         }
 
