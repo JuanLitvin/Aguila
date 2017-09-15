@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import com.google.android.things.pio.Gpio;
+import com.google.android.things.pio.PeripheralManagerService;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 import com.squareup.otto.Bus;
@@ -13,12 +16,16 @@ import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 import com.tapadoo.alerter.Alerter;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     public static Context context;
 
+    private Gpio gpioLED;
 	public static Bus serviceBus = new Bus(ThreadEnforcer.MAIN);
 
     @Override
@@ -29,9 +36,21 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseMessaging.getInstance().subscribeToTopic("news-debug");
 
+        registerGPIO();
         RESTClient.init(this);
         Mirror.register(this);
         serviceBus.register(this);
+    }
+
+    private void registerGPIO() {
+        try {
+            PeripheralManagerService manager = new PeripheralManagerService();
+            gpioLED = manager.openGpio("bcm11");
+            Toast.makeText(this, manager.getGpioList().get(2), Toast.LENGTH_SHORT).show();
+            gpioLED.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);
+        } catch (IOException e) {
+            Log.w("MainActivity", "Unable to access GPIO", e);
+        }
     }
 
     public static void loadUserModules(List<Module> modules) {
@@ -87,6 +106,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         serviceBus.unregister(this);
+
+        if (gpioLED != null) {
+            try {
+                gpioLED.close();
+                gpioLED = null;
+            } catch (IOException e) {
+                Log.w("MainActivity", "Unable to close GPIO", e);
+            }
+        }
+
         super.onDestroy();
     }
 
@@ -114,12 +143,15 @@ public class MainActivity extends AppCompatActivity {
 
         if (remoteMessage.getData().get("action").toString().equals("voiceCommand")) {
             try {
-                switch (new JSONObject(remoteMessage.getData().get("extras")).getString("code")) {
+                JSONObject extras = new JSONObject(remoteMessage.getData().get("extras"));
+                switch (extras.getString("code")) {
                     case "io.lights.on":
                         Toast.makeText(context, "Turning lights on", Toast.LENGTH_SHORT).show();
+                        gpioLED.setValue(true);
                         break;
                     case "io.lights.off":
                         Toast.makeText(context, "Turning lights off", Toast.LENGTH_SHORT).show();
+                        gpioLED.setValue(false);
                         break;
                     case "order.uber":
                         Toast.makeText(context, "Ordering Uber", Toast.LENGTH_SHORT).show();
