@@ -45,8 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private void registerGPIO() {
         try {
             PeripheralManagerService manager = new PeripheralManagerService();
-            gpioLED = manager.openGpio("bcm11");
-            Toast.makeText(this, manager.getGpioList().get(2), Toast.LENGTH_SHORT).show();
+            gpioLED = manager.openGpio("BCM26");
             gpioLED.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);
         } catch (IOException e) {
             Log.w("MainActivity", "Unable to access GPIO", e);
