@@ -51,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void assignViews() {
         listDevices = (ListView) findViewById(R.id.listDevices);
+        listDevices.setDivider(null);
+        listDevices.setDividerHeight(0);
+
         fabMenu = (FloatingActionMenu) findViewById(R.id.fabMenu);
         fabAddDevice = (FloatingActionButton) findViewById(R.id.fab_addDevice);
         fabSignInDevice = (FloatingActionButton) findViewById(R.id.fab_signInDevice);

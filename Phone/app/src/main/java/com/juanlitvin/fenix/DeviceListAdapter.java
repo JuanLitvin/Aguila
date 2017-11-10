@@ -48,13 +48,18 @@ public class DeviceListAdapter extends ArrayAdapter {
         final Device device = devices.get(position);
 
         TextView lblDeviceName = (TextView) v.findViewById(R.id.lblDeviceName);
-        TextView lblUserName = (TextView) v.findViewById(R.id.lblUserName);
+        TextView lblCurrentUser = (TextView) v.findViewById(R.id.lblCurrentUser);
+        TextView lblOwnerUser = (TextView) v.findViewById(R.id.lblOwnerUser);
+        TextView lblDateAdded = (TextView) v.findViewById(R.id.lblDateAdded);
+        TextView lblYouAreOwner = (TextView) v.findViewById(R.id.lblYouAreOwner);
         ImageButton btnVoice = (ImageButton) v.findViewById(R.id.btnVoice);
         ImageButton btnLogout = (ImageButton) v.findViewById(R.id.btnLogout);
         ImageButton btnRemove = (ImageButton) v.findViewById(R.id.btnRemove);
 
         if (device.isOwner()) { //only will set listeners to owner functions if user is owner of the device
             //listeners
+
+            lblYouAreOwner.setVisibility(View.VISIBLE);
 
             btnRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -109,6 +114,7 @@ public class DeviceListAdapter extends ArrayAdapter {
             });
         } else {
             btnVoice.setVisibility(View.GONE);
+            lblYouAreOwner.append("\nSomeone else is logged into this device. To configure it or use voice commands, please log in with code " + device.getCode());
         }
 
         //global listeners
@@ -153,7 +159,9 @@ public class DeviceListAdapter extends ArrayAdapter {
         });
 
         lblDeviceName.setText(device.getName());
-        lblUserName.setText(device.getLoggedName());
+        lblCurrentUser.setText(device.getLoggedName());
+        lblOwnerUser.setText(device.getOwnerName());
+        lblDateAdded.setText(device.getDateAddedString());
 
         return v;
     }

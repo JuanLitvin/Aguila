@@ -9,22 +9,30 @@ import java.util.Map;
 
 public class Device {
 
+    private String code;
     private String idDevice;
     private String idOwner;
     private String idLogged;
     private String name;
     private String ownerName;
     private String loggedName;
+    private String dateAdded;
     private boolean isOwner;
 
-    public Device(String _idDevice, String _idOwner, String _idLogged, String _name, String _ownerName, String _loggedName, boolean _isOwner) {
+    public Device(String _code, String _idDevice, String _idOwner, String _idLogged, String _name, String _ownerName, String _loggedName, String _dateAdded, boolean _isOwner) {
+        code = _code;
         idDevice = _idDevice;
         idOwner = _idOwner;
         idLogged = _idLogged;
         name = _name;
         ownerName = _ownerName;
         loggedName = _loggedName;
+        dateAdded = _dateAdded;
         isOwner = _isOwner;
+    }
+
+    public String getCode() {
+        return code;
     }
 
     public String getIdDevice() {
@@ -51,8 +59,11 @@ public class Device {
         return loggedName;
     }
 
+    public String getDateAddedString() {
+        return dateAdded;
+    }
+
     public boolean isOwner() {
         return isOwner;
     }
-
 }
